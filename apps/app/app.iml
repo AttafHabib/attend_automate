@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="ELIXIR_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/../../_build/dev/lib/attend_automate/ebin" />
+    <output-test url="file://$MODULE_DIR$/../../_build/test/lib/attend_automate/ebin" />
+    <content url="file://$MODULE_DIR$/../app">
+      <sourceFolder url="file://$MODULE_DIR$/../app/lib" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../app/spec" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../app/test" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/../app/assets/node_modules/phoenix" />
+      <excludeFolder url="file://$MODULE_DIR$/../app/assets/node_modules/phoenix_html" />
+      <excludeFolder url="file://$MODULE_DIR$/../app/cover" />
+      <excludeFolder url="file://$MODULE_DIR$/../app/deps" />
+      <excludeFolder url="file://$MODULE_DIR$/../app/doc" />
+      <excludeFolder url="file://$MODULE_DIR$/../app/logs" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="phoenix_pubsub" level="project" />
+    <orderEntry type="library" name="ecto_sql" level="project" />
+    <orderEntry type="library" name="postgrex" level="project" />
+    <orderEntry type="library" name="jason" level="project" />
+    <orderEntry type="library" name="ex_doc" level="project" />
+    <orderEntry type="library" name="telemetry" level="project" />
+    <orderEntry type="library" name="db_connection" level="project" />
+    <orderEntry type="library" name="benchee" level="project" />
+    <orderEntry type="library" name="benchee_json" level="project" />
+    <orderEntry type="library" name="table" level="project" />
+    <orderEntry type="library" name="decimal" level="project" />
+    <orderEntry type="library" name="connection" level="project" />
+  </component>
+</module>

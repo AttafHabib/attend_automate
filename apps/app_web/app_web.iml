@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="ELIXIR_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/../../_build/dev/lib/attend_automate_web/ebin" />
+    <output-test url="file://$MODULE_DIR$/../../_build/test/lib/attend_automate_web/ebin" />
+    <content url="file://$MODULE_DIR$/../app_web">
+      <sourceFolder url="file://$MODULE_DIR$/../app_web/lib" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../app_web/spec" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../app_web/test" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/../app_web/assets/node_modules/phoenix" />
+      <excludeFolder url="file://$MODULE_DIR$/../app_web/assets/node_modules/phoenix_html" />
+      <excludeFolder url="file://$MODULE_DIR$/../app_web/cover" />
+      <excludeFolder url="file://$MODULE_DIR$/../app_web/deps" />
+      <excludeFolder url="file://$MODULE_DIR$/../app_web/doc" />
+      <excludeFolder url="file://$MODULE_DIR$/../app_web/logs" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="phoenix" level="project" />
+    <orderEntry type="library" name="phoenix_ecto" level="project" />
+    <orderEntry type="library" name="phoenix_html" level="project" />
+    <orderEntry type="library" name="phoenix_live_reload" level="project" />
+    <orderEntry type="library" name="phoenix_live_view" level="project" />
+    <orderEntry type="library" name="floki" level="project" />
+    <orderEntry type="library" name="phoenix_live_dashboard" level="project" />
+    <orderEntry type="library" name="esbuild" level="project" />
+    <orderEntry type="library" name="telemetry_metrics" level="project" />
+    <orderEntry type="library" name="telemetry_poller" level="project" />
+    <orderEntry type="library" name="gettext" level="project" />
+    <orderEntry type="module" module-name="app" />
+    <orderEntry type="library" name="jason" level="project" />
+    <orderEntry type="library" name="plug_cowboy" level="project" />
+    <orderEntry type="library" name="plug" level="project" />
+    <orderEntry type="library" name="plug_crypto" level="project" />
+    <orderEntry type="library" name="telemetry" level="project" />
+    <orderEntry type="library" name="phoenix_pubsub" level="project" />
+    <orderEntry type="library" name="phoenix_view" level="project" />
+    <orderEntry type="library" name="ex_doc" level="project" />
+    <orderEntry type="library" name="ecto" level="project" />
+    <orderEntry type="library" name="ecto_sql" level="project" />
+    <orderEntry type="library" name="makeup_eex" level="project" />
+    <orderEntry type="library" name="makeup_elixir" level="project" />
+    <orderEntry type="library" name="phx_new" level="project" />
+    <orderEntry type="library" name="mint" level="project" />
+    <orderEntry type="library" name="mint_web_socket" level="project" />
+    <orderEntry type="library" name="file_system" level="project" />
+    <orderEntry type="library" name="html_entities" level="project" />
+    <orderEntry type="library" name="mime" level="project" />
+    <orderEntry type="library" name="ecto_psql_extras" level="project" />
+    <orderEntry type="library" name="ecto_mysql_extras" level="project" />
+    <orderEntry type="library" name="circular_buffer" level="project" />
+    <orderEntry type="library" name="stream_data" level="project" />
+    <orderEntry type="library" name="castore" level="project" />
+    <orderEntry type="library" name="dialyxir" level="project" />
+    <orderEntry type="library" name="excoveralls" level="project" />
+    <orderEntry type="library" name="cowboy" level="project" />
+    <orderEntry type="library" name="cowboy_telemetry" level="project" />
+    <orderEntry type="library" name="hackney" level="project" />
+    <orderEntry type="library" name="kadabra" level="project" />
+    <orderEntry type="library" name="x509" level="project" />
+    <orderEntry type="library" name="decimal" level="project" />
+    <orderEntry type="library" name="db_connection" level="project" />
+    <orderEntry type="library" name="benchee" level="project" />
+    <orderEntry type="library" name="benchee_json" level="project" />
+    <orderEntry type="library" name="connection" level="project" />
+    <orderEntry type="module" module-name="attend_automate" />
+  </component>
+</module>
