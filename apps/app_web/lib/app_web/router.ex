@@ -14,20 +14,37 @@ defmodule AppWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug App.Guardian.Pipeline
+  end
+
+  pipeline :ensure_auth do
+    plug Guardian.Plug.EnsureAuthenticated
+  end
+
   pipeline :login do
     plug :put_root_layout, {AppWeb.LayoutView, :login}
   end
 
   scope "/", AppWeb do
+    pipe_through [:browser]
 
     post "/login", SessionController, :login
   end
 
   scope "/", AppWeb do
-    pipe_through :browser
+    pipe_through [:browser, :auth]
 
+#    get "/", PageController, :index
+    live "/", SessionLive.Login, :login
     live "/login", SessionLive.Login, :login
-    get "/", PageController, :index
+  end
+
+  scope "/", AppWeb do
+    pipe_through [:browser, :auth, :ensure_auth]
+
+    get "/dashboard", PageController, :index
+    get "/logout", SessionController, :logout
   end
 
   # Other scopes may use custom stacks.

@@ -21,6 +21,7 @@ defmodule AppWeb do
     quote do
       use Phoenix.Controller, namespace: AppWeb
 
+      import Phoenix.LiveView.Controller
       import Plug.Conn
       import AppWeb.Gettext
       alias AppWeb.Router.Helpers, as: Routes
