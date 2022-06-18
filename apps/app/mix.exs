@@ -37,6 +37,8 @@ defmodule App.MixProject do
   defp deps do
     [
       {:phoenix_pubsub, "~> 2.0"},
+      {:guardian, "~> 2.2.3"},
+      {:argon2_elixir, "~> 3.0"},
       {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.2"}
