@@ -5,6 +5,7 @@ defmodule App.Context.Users do
 
   import Ecto.Query, warn: false
   alias App.Repo
+  alias App.Guardian
 
   alias App.Schema.User
 
@@ -37,7 +38,7 @@ defmodule App.Context.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-  def get_user(cnic), do: Repo.one(from u in User, where: u.cnic == ^cnic)
+  def get_user(email), do: Repo.one(from u in User, where: u.email == ^email)
 
   @doc """
   Creates a user.
@@ -100,19 +101,37 @@ defmodule App.Context.Users do
       %Ecto.Changeset{data: %User{}}
 
   """
-  def change_user(%User{} = user, attrs \\ %{}) do
+  def change_user(%User{} = user \\ %User{}, attrs \\ %{}) do
     User.changeset(user, attrs)
   end
 
-  def authenticate_user(cnic, plain_text_password) do
-    case get_user(cnic) do
+  @doc """
+  Returns an 2 element tuple where first element is :error or :ok while second is
+  User struct or error_name atom after authenticating User
+
+  ## Examples
+
+      iex> authenticate_user(email, password)
+      %{:ok, %User{}}
+
+  """
+  @spec authenticate_user(String.t(), String.t()) :: {:ok, %User{}} | {:error, atom}
+  def authenticate_user(email, plain_text_password) do
+    case get_user(email) do
       nil -> Argon2.no_user_verify()
-             {:error, :invalid_cnic}
+             {:error, :invalid_email}
       user -> if Argon2.verify_pass(plain_text_password, user.password) do
                 {:ok, user}
               else
                 {:error, :invalid_password}
               end
+    end
+  end
+
+  def verify_user(token) do
+    case Guardian.decode_and_verify(token) do
+      {:ok, claims} -> Guardian.resource_from_claims(claims)
+      {:error, reason} -> {:error, reason}
     end
   end
 end

@@ -5,11 +5,11 @@
             <div class="formbox">
 
                 <h3><%= gettext("Welcome") %></h3>
-                <%= form_for :foo, Routes.session_path(@socket, :login), fn f -> %>
+                <%= f = form_for @changeset, Routes.session_path(@socket, :login), fn f -> %>
 
                 <div class="form-group">
                     <%= label f, :email %>
-                    <%= text_input f, :email, class: "form-control" %>
+                    <%= text_input f, :email, class: "form-control"%>
                     <%= error_tag f, :email %>
                 </div>
                 <div class="form-group">
@@ -17,7 +17,7 @@
                     <%= password_input f, :password, class: "form-control" %>
                     <%= error_tag f, :password %>
                 </div>
-                <div class="form-group float-right">
+                <div class="form-group custom float-right">
                     <button class="dbtn btn" type="submit"><%= gettext("Login") %></button>
                     <p><a href="#" phx-click="forget_password"><%= gettext("forgot password") %></a></p>
                 </div>
