@@ -20,10 +20,12 @@ erl_crash.dump
 *.ez
 
 /apps/app_web/app_web.iml
+/apps/app/app.iml
 
 /attend_automate.iml
 
-/.idea/
+/.idea
+/.idea/*
 
 # Temporary files, for example, from tests.
 /tmp
