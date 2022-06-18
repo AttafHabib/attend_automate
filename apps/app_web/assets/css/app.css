@@ -1,120 +1,80 @@
-/* This file is for your main application CSS */
-@import "./phoenix.css";
-
-/* Alerts and form errors used by phx.new */
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
+html,body{
+  font-family: 'Poppins', sans-serif;
 }
-.alert-info {
-  color: #31708f;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
+body{
+  margin: 0px;
+  background: rgba(245,242,242,1.0);
 }
-.alert-warning {
-  color: #8a6d3b;
-  background-color: #fcf8e3;
-  border-color: #faebcc;
+.half_container{
+  width: 50%;
+  height: 100vh;
 }
-.alert-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
+.margin-auto{
+  margin-bottom: auto !important;
+  margin-top: auto !important;
 }
-.alert p {
-  margin-bottom: 0;
+.full_screen{
+  height: 100vh;
 }
-.alert:empty {
-  display: none;
-}
-.invalid-feedback {
-  color: #a94442;
-  display: block;
-  margin: -1rem 0 2rem;
-}
-
-/* LiveView specific classes for your customization */
-.phx-no-feedback.invalid-feedback,
-.phx-no-feedback .invalid-feedback {
-  display: none;
-}
-
-.phx-click-loading {
-  opacity: 0.5;
-  transition: opacity 1s ease-out;
-}
-
-.phx-loading{
-  cursor: wait;
-}
-
-.phx-modal {
-  opacity: 1!important;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
+.formbox {
+  margin: 0 auto;
+  max-width: 100%;
   width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+  padding: 0 100px;
 }
-
-.phx-modal-content {
-  background-color: #fefefe;
-  margin: 15vh auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
+@media (max-width: 850px){
+  .formbox {
+    margin: 0 auto;
+    max-width: 100%;
+    width: 100%;
+    padding: 0 25px;
+  }
 }
-
-.phx-modal-close {
-  color: #aaa;
+.formbox .dbtn {
+  border-radius: 0;
+  font-size: 20px;
+  font-weight: 500;
+  padding-left: 30px;
+  padding-right: 30px;
+  border:1px solid  #f7ec4d !important;
+  background: #f7ec4d !important;
+  color: black !important;
+  outline: none !important;
+  border-radius: 5px;
   float: right;
-  font-size: 28px;
-  font-weight: bold;
+  margin-bottom: 5px;
 }
+.formbox .dbtn:hover{
+  background-color:#AA3C28 !important;
+  color: #fff !important;
+  outline: none !important;
+}
+.formbox a{
+  font-size: 16px;
+  color: #000000;
+  font-style: italic;
+  margin-left: 5px;
+}
+.formbox a:hover{
+  color: #AA3C28;
+}
+.dbtn{
+  color: #A71832 !important;
+  font-weight: bold !important;
+  font-family: 'Montserrat',sans-serif;
+  border: 1px solid #A71832 !important;
+  background-color: #fff !important;
 
-.phx-modal-close:hover,
-.phx-modal-close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
 }
-
-.fade-in-scale {
-  animation: 0.2s ease-in 0s normal forwards 1 fade-in-scale-keys;
+.dbtn:hover{
+  background-color: #A71832 !important;
+  color: #fff !important;
 }
-
-.fade-out-scale {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-out-scale-keys;
+.form-group {
+  margin-bottom: 20px !important;
 }
-
-.fade-in {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-in-keys;
-}
-.fade-out {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-out-keys;
-}
-
-@keyframes fade-in-scale-keys{
-  0% { scale: 0.95; opacity: 0; }
-  100% { scale: 1.0; opacity: 1; }
-}
-
-@keyframes fade-out-scale-keys{
-  0% { scale: 1.0; opacity: 1; }
-  100% { scale: 0.95; opacity: 0; }
-}
-
-@keyframes fade-in-keys{
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes fade-out-keys{
-  0% { opacity: 1; }
-  100% { opacity: 0; }
+form .form-group label{
+  font-size: 14px;
+  margin-top: 15px;
+  display: block;
 }

@@ -14,9 +14,19 @@ defmodule AppWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :login do
+    plug :put_root_layout, {AppWeb.LayoutView, :login}
+  end
+
+  scope "/", AppWeb do
+
+    post "/login", SessionController, :login
+  end
+
   scope "/", AppWeb do
     pipe_through :browser
 
+    live "/login", SessionLive.Login, :login
     get "/", PageController, :index
   end
 
