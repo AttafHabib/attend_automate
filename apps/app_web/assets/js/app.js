@@ -2,6 +2,7 @@
 // Remove this line if you add a your own CSS build pipeline (e.g postcss).
 import "../css/app.css"
 import "../css/style.css"
+import "../css/coreui.min.css"
 
 // If you want to use Phoenix channels, run `mix help phx.gen.channel`
 // to get started and then uncomment the line below.
@@ -32,8 +33,8 @@ let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToke
 
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
-window.addEventListener("phx:page-loading-start", info => topbar.show())
-window.addEventListener("phx:page-loading-stop", info => topbar.hide())
+// window.addEventListener("phx:page-loading-start", info => topbar.show())
+// window.addEventListener("phx:page-loading-stop", info => topbar.hide())
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
@@ -43,4 +44,10 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
+$(document).ready(function () {
+  $("#sidebarToggleTop").on('click', function (){
+    $("#sidebar-wrapper").toggleClass("toggled");
+    $("#sidebar-wrapper").toggleClass("is_mobile");
+  })
+});
 
