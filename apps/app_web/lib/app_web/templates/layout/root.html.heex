@@ -16,9 +16,9 @@
   </head>
   <body>
     <div id="wrapper" class="d-flex">
-      <%= live_render(@conn, AppWeb.SidebarLive.SideBar) %>
-      <div id="content flex-direction-column">
-        <%= live_render(@conn, AppWeb.TopbarLive.TopBar) %>
+      <%= live_render(@conn, AppWeb.TopbarLive.TopBar, container: {:nav, class: "nav-topbar", id: "top-nav"}, id: "top-nav-container") %>
+      <div id="content">
+        <%= live_render(@conn, AppWeb.SidebarLive.SideBar, container: {:nav, class: "sidebar-wrapper is-mobile toggled", id: "side-nav"}, id: "side-nav-container") %>
         <%= @inner_content %>
       </div>
     </div>
