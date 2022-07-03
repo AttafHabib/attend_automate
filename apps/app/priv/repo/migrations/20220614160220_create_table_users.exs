@@ -6,10 +6,9 @@ defmodule App.Repo.Migrations.CreateTableUsers do
     create table(@table) do
       add :username, :string, [size: 30, null: false]
       add :email, :string,  null: false
-      add :cnic, :string, [size: 13,  null: false]
       add :password, :string,  null: false
       timestamp()
     end
-    create unique_index(@table, [:email, :cnic])
+    create unique_index(@table, [:email])
   end
 end

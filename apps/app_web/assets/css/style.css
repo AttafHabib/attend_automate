@@ -29,8 +29,8 @@ ul li a {
     background: #333;
     height: 100%;
     color: #f9f9f9;
-    min-width: 150px;
-    max-width: 150px;
+    min-width: 130px;
+    max-width: 130px;
     transition: all .3s;
     border-top: 1px solid #545353;
 }
@@ -73,7 +73,7 @@ ul li a {
 }
 @media(min-width: 768px){
     .sidebar-wrapper.is-mobile{
-        min-width: 150px;
+        min-width: 130px;
     }
 }
 

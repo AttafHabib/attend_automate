@@ -2,10 +2,10 @@ defmodule App.Schema.User do
   use App.Schema
 
   alias Argon2
+  alias App.SchemaHelpers
 
   @type t :: %__MODULE__{
                username: String.t(),
-               cnic: String.t(),
                email: String.t(),
                password: String.t()
              }
@@ -13,7 +13,6 @@ defmodule App.Schema.User do
 
   schema "users" do
     field :username, :string
-    field :cnic, :string
     field :email, :string
     field :password, :string
 
@@ -22,7 +21,6 @@ defmodule App.Schema.User do
 
   @required_fields ~w|
     username
-    cnic
     email
     password
   |a
@@ -32,8 +30,7 @@ defmodule App.Schema.User do
     |> cast(attrs, @required_fields)
     |> validate_required(@required_fields)
     |> validate_length(:username, min: 3, max: 30)
-    |> validate_length(:cnic, is: 13)
-    |> custom_error() #Must be before any custom message as it appends field with error reason
+    |> SchemaHelpers.custom_error() #Must be before any custom message as it appends field with error reason
     |> validate_email(:email)
     |> put_password_hash()
   end
@@ -63,15 +60,6 @@ defmodule App.Schema.User do
         end)
       )
     end
-  end
-
-  @spec custom_error(%Ecto.Changeset{})::%Ecto.Changeset{}
-  defp custom_error(%Ecto.Changeset{}=changeset) do
-    update_in(changeset.errors, &(Enum.map &1, fn
-      {key_, {"can't be blank",validations}} -> {key_,{"#{key_ |>Atom.to_string|>String.capitalize} can't be blank", validations}}
-      {key_, {message, validations}} -> {key_,{"#{key_ |>Atom.to_string|>String.capitalize}"<>message,validations}}
-      {key_, val} -> {key_,val}
-    end))
   end
 
 end

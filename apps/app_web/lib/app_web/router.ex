@@ -44,7 +44,7 @@ defmodule AppWeb.Router do
   scope "/", AppWeb do
     pipe_through [:browser, :auth, :ensure_auth]
 
-    get "/dashboard", PageController, :index
+    live "/dashboard",DashboardLive.Index, :index
     get "/logout", SessionController, :logout
   end
 
