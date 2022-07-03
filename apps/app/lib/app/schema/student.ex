@@ -22,6 +22,8 @@ defmodule App.Schema.Student do
     field :address, :string
     field :phone_no, :string
 
+    has_one(:user, App.Schema.User)
+
     timestamp()
   end
 
