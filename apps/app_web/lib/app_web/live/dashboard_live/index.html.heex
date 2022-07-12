@@ -1,4 +1,9 @@
-<section class="phx-hero">
-    <h1><%= gettext "Welcome to %{name}!", name: "Attaf Habib" %></h1>
-    <p>Peace of mind from creating Fyp</p>
-</section>
+<div class="bg bg-white" style="position: relative">
+    <div class="row">
+        <%= component(&get_breadcrumbs/1, items: [{Routes.dashboard_index_path(@socket, :index), "Dashboard"}]) %>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <h1><%= gettext "Welcome to %{name}!", name: "Attaf Habib" %></h1>
+        <p>Peace of mind from creating Fyp</p>
+    </div>
+</div>

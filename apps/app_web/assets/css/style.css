@@ -98,3 +98,15 @@ ul li a {
 .nav-topbar ul li{
     margin: auto;
 }
+.editbox{
+    position: absolute;
+    top: 12px;
+    right: 15px;
+}
+.section_container{
+    padding: 15px;
+    flex-grow: 1;
+}
+tr{
+    border-bottom: 1px solid #E8E8E8;
+}

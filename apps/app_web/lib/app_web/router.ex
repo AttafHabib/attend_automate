@@ -44,7 +44,8 @@ defmodule AppWeb.Router do
   scope "/", AppWeb do
     pipe_through [:browser, :auth, :ensure_auth]
 
-    live "/dashboard",DashboardLive.Index, :index
+    live "/dashboard", DashboardLive.Index, :index
+    live "/course", CourseLive.Index, :index, container: {:section, class: "section_container"}
     get "/logout", SessionController, :logout
   end
 

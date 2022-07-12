@@ -1,0 +1,26 @@
+<div class="bg bg-white" style="position: relative">
+    <div class="row">
+        <%= component(&get_breadcrumbs/1, items: [{Routes.course_index_path(@socket, :index), "Courses"}]) %>
+    </div>
+    <a type="button" class="editbox"><i class="fas fa-ellipsis-v"></i></a>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="table-responsive">
+            <table class="table table-borderless">
+                <thead>
+                <th>Code</th>
+                <th>CourseName</th>
+                <th>Teacher</th>
+                </thead>
+                <tbody>
+                <%= for course <- @courses do %>
+                <tr>
+                    <td><%= course.code %></td>
+                    <td><%= course.title %></td>
+                    <td><%= course.teacher %></td>
+                </tr>
+                <% end %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

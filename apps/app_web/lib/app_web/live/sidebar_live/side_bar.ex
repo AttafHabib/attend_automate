@@ -5,7 +5,7 @@ defmodule AppWeb.SidebarLive.SideBar do
   def mount(params, session, socket) do
 
 
-    {:ok, socket, layout: false}
+    {:ok, socket}
   end
 
 end

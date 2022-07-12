@@ -1,4 +1,5 @@
 defmodule App.Helpers do
+  alias App.Guardian
 
   @spec update_error(%Ecto.Changeset{}, {atom, String.t()}):: %Ecto.Changeset{}
   def update_error(%Ecto.Changeset{} = changeset, {key, error}) do
@@ -20,6 +21,12 @@ defmodule App.Helpers do
     else
       changeset
     end
+  end
+
+
+  def get_current_user(token) do
+    {:ok, claims} = Guardian.decode_and_verify(token)
+    Guardian.resource_from_claims(claims)
   end
 
 end
