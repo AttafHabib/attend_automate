@@ -4,13 +4,15 @@ defmodule App.Schema.Student do
   alias App.SchemaHelpers
 
   @type t :: %__MODULE__{
+               id: binary,
                first_name: String.t(),
                last_name: String.t(),
                email: String.t(),
                cnic: String.t(),
                roll_no: String.t(),
                address: String.t(),
-               phone_no: String.t()
+               phone_no: String.t(),
+               user_id: binary
              }
 
   schema "students" do
@@ -21,6 +23,7 @@ defmodule App.Schema.Student do
     field :roll_no, :string
     field :address, :string
     field :phone_no, :string
+    field :user_id, :integer
 
     has_one(:user, App.Schema.User)
 
@@ -38,6 +41,7 @@ defmodule App.Schema.Student do
   last_name
   email
   phone_no
+  user_id
   |a
 
 
