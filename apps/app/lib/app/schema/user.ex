@@ -16,6 +16,9 @@ defmodule App.Schema.User do
     field :email, :string
     field :password, :string
 
+    has_one(:user_role, App.Schema.UserRole)
+    has_one :student, App.Schema.Student, foreign_key: :user_id
+
     timestamp()
   end
 

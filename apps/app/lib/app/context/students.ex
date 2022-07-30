@@ -17,8 +17,21 @@ defmodule App.Context.Students do
       [%Student{}, ...]
 
   """
-  def list_students do
+  def list_students() do
     raise "TODO"
+  end
+
+  @doc """
+  Returns the list of students having no user profiles.
+  ## Examples
+
+       iex> list_students(true)
+        [%Student{}, ...]
+  """
+  def list_students(profile = false) do
+    from(s in Student,
+      where: is_nil(s.user_id)
+    )|> Repo.all
   end
 
   @doc """

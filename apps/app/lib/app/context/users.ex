@@ -19,7 +19,7 @@ defmodule App.Context.Users do
 
   """
   def list_users do
-    Repo.all(User)
+    Repo.all(from User, preload: [:student, user_role: :role])
   end
 
   @doc """
