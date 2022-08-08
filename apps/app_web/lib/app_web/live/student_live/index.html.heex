@@ -67,7 +67,7 @@
                     </div>
                     <div class="form-group">
                         <%= label f, :cnic %>
-                        <%= text_input f, :cnic, class: "form-control", required: true %>
+                        <%= text_input f, :cnic, class: "form-control", pattern: ".{13,13}", required: true %>
                     </div>
                     <div class="form-group">
                         <%= label f, :course %>

@@ -5,7 +5,6 @@ defmodule AppWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {AppWeb.LayoutView, :login}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -28,7 +27,7 @@ defmodule AppWeb.Router do
   end
 
   scope "/", AppWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :login]
 
     post "/login", SessionController, :login
   end

@@ -102,8 +102,11 @@ defmodule AppWeb.CourseLive.Index do
   def handle_info("close_modals", socket) do
     {
       :noreply,
-      assign(socket, :modal, nil)
-    }
+      push_event(
+        socket,
+        "close_modals",
+        %{"modal" => socket.assigns.modal}
+      )    }
   end
 
 end

@@ -2,7 +2,7 @@ defmodule AppWeb.StudentLive.Index do
   use AppWeb, :live_view
   alias App.Context
   alias App.Context.{Students}
-  alias App.Schema.{Student}
+  alias App.Schema.{Student, Department}
 
   def mount(params, session, socket) do
     students = Students.list_students
@@ -48,6 +48,16 @@ defmodule AppWeb.StudentLive.Index do
   end
 
   @impl true
+  def handle_event("close_modals", _, socket) do
+    if connected?(socket), do: Process.send_after(self(), "close_modals", 300)
+
+    {
+      :noreply,
+      socket
+    }
+  end
+
+  @impl true
   def handle_info("open_modals", socket) do
     {
       :noreply,
@@ -63,12 +73,11 @@ defmodule AppWeb.StudentLive.Index do
   def handle_info("close_modals", socket) do
     {
       :noreply,
-      assign(socket, :modal, nil)
-      #      push_event(
-      #        assign(socket, :modal, nil),
-      #        "close_modals",
-      #        %{"modal" => socket.assigns.modal}
-      #      )
+      push_event(
+        socket,
+        "close_modals",
+        %{"modal" => socket.assigns.modal}
+      )
     }
   end
 end

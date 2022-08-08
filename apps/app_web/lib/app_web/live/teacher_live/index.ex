@@ -42,6 +42,16 @@ defmodule AppWeb.TeacherLive.Index do
   end
 
   @impl true
+  def handle_event("close_modals", _, socket) do
+    if connected?(socket), do: Process.send_after(self(), "close_modals", 300)
+
+    {
+      :noreply,
+      socket
+    }
+  end
+
+  @impl true
   def handle_event("save", params, socket) do
     IO.inspect("=============params=============")
     IO.inspect(params)
@@ -65,7 +75,11 @@ defmodule AppWeb.TeacherLive.Index do
   def handle_info("close_modals", socket) do
     {
       :noreply,
-      assign(socket, :modal, nil)
+      push_event(
+        socket,
+        "close_modals",
+        %{"modal" => socket.assigns.modal}
+      )
     }
   end
 end

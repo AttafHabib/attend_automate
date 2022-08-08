@@ -14,6 +14,7 @@ defmodule App.Schema.Teacher do
     field :user_id, :string
 
     has_one(:user, App.Schema.User)
+#    has_many()
     belongs_to(:department, App.Schema.Department)
 
     timestamps()

@@ -26,8 +26,10 @@ import "phoenix_html"
 // Establish Phoenix Socket and LiveView configuration.
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
-import topbar from "../vendor/topbar"
-import jQuery from "../vendor/jquery.min.js"
+import 'bootstrap'
+// import jq 'jquery'
+// import topbar from "../vendor/topbar"
+import jQuery from "jquery"
 window.jQuery = jQuery
 window.$ = jQuery
 
@@ -42,7 +44,7 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks: Hooks})
 
 // Show progress bar on live navigation and form submits
-topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
+// topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
 // window.addEventListener("phx:page-loading-start", info => topbar.show())
 // window.addEventListener("phx:page-loading-stop", info => topbar.hide())
 
@@ -56,6 +58,7 @@ liveSocket.connect()
 window.liveSocket = liveSocket
 $(document).ready(function () {
   $("#sidebarToggleTop").on('click', function (){
+    console.log("FFF")
     $("#sidebar-wrapper").toggleClass("toggled");
     $("#sidebar-wrapper").toggleClass("is_mobile");
   })
