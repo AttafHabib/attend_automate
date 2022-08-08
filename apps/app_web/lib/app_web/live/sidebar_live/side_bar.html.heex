@@ -11,13 +11,16 @@
         <a href={Routes.course_index_path(@socket, :index)} class="nav-link">Courses</a>
     </li>
     <li class="nav-item">
-        <a href="#" class="nav-link">Teachers</a>
+        <a href={Routes.teacher_index_path(@socket, :index)} class="nav-link">Teachers</a>
     </li>
     <li class="nav-item">
-        <a href="#" class="nav-link">Students</a>
+        <a href={Routes.student_index_path(@socket, :index)} class="nav-link">Students</a>
     </li>
     <li class="nav-item">
         <a href={Routes.user_index_path(@socket, :index)} class="nav-link">Users</a>
+    </li>
+    <li class="nav-item">
+        <a href={Routes.department_index_path(@socket, :index)} class="nav-link">Departments</a>
     </li>
     <li class="nav-item">
         <a href={Routes.session_path(@socket, :logout)} class="nav-link">Logout</a>

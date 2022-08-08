@@ -1,5 +1,5 @@
 <div class="prof_nav m-0">
-    <h2 class="text-left">Courses</h2>
+    <h2 class="text-left">Departments</h2>
     <div class="flexSect">
         <div class="flexInSect"  style="flex-grow: unset">
             <div class={"searchexp #{assigns[:search_bar] && "active"}"}>
@@ -8,34 +8,37 @@
                 <i class="fa fa-search fa-sm"></i>
             </a>
             <%= text_input f, :search, class: "form-control #{assigns[:search_bar] && "active"}", name: "value", autofocus: false %>
-        </.form>
+            </.form>
+            </div>
+            <a href="#" phx-click="filter_btn" phx-value-btn="department" class="btn sbtn"><i class="fa fa-filter"></i></a>
+            <button class="btn sbtn" style="width: unset" phx-click="open_modals" phx-value-modal="add_dpt">
+            <i class="fa fa-plus pr-3"></i>
+            Department
+            </button>
+        </div>
     </div>
-    <a href="#" phx-click="filter_btn" phx-value-btn="course" class="btn sbtn"><i class="fa fa-filter"></i></a>
-    <button class="btn sbtn" style="width: unset" phx-click="open_modals" phx-value-modal="add_course">
-        <i class="fa fa-plus pr-3"></i>
-        Course
-    </button>
-</div>
-</div>
 </div>
 <div class="bg bg-white" style="position: relative">
-    <a type="button" class="editbox"><i class="fas fa-ellipsis-v"></i></a>
     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="dropdown editbox">
+            <button class="btn" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+            <div class="dropdown-menu">
+                <a href="#" class="dropdown-item">Edit Department</a>
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table table-borderless">
                 <thead>
-                <th>Code</th>
-                <th>CourseName</th>
-                <th>Teacher</th>
-                <th>Department</th>
+                <th>Name</th>
+                <th>Total Students</th>
+                <th>Total Courses</th>
                 </thead>
                 <tbody>
-                <%= for course <- @courses do %>
+                <%= for dpt <- @departments do %>
                 <tr>
-                    <td><%= course.course_code %></td>
-                    <td><%= course.name %></td>
-                    <td><%= %></td>
-                    <td><%= course.department.name %></td>
+                    <td><%= dpt.name %></td>
+                    <td><%= 0 %></td>
+                    <td><%= 0 %></td>
                 </tr>
                 <% end %>
                 </tbody>
@@ -44,31 +47,27 @@
     </div>
 </div>
 <div class="popups" phx-hook="modals" id="modals-div-12">
-    <%= if assigns[:modal] == "add_course" do %>
+    <%= if assigns[:modal] == "add_dpt" do %>
     <div class="modal fade" id={assigns[:modal]}>
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
                     <span class="close" phx-click="close_modals" data-dismiss="modal">&times;</span>
-                    <h4 class="text-center" style="color: #812E23">Add Course</h4>
-                    <.form let={f} for={assigns[:changeset_course]} phx-submit="save">
+                    <h4 class="text-center" style="color: #812E23">Add Department</h4>
+                    <.form let={f} for={assigns[:changeset_dpt]} phx-submit="save">
                     <div class="form-group">
                         <%= label f, :name %>
-                        <%= text_input f, :name, class: "form-control", placeholder: "Enter course name", required: true%>
+                        <%= text_input f, :name, class: "form-control", required: true%>
                     </div>
                     <div class="form-group">
-                        <%= label f, :course_code %>
-                        <%= text_input f, :course_code, class: "form-control", pattern: ".{7,7}", placeholder: "Enter 7 letter course code", required: true%>
-                    </div>
-                    <div class="form-group">
-                        <%= label f, :department_id %>
-                        <%= select f, :department_id, @dpt_dropdown , class: "form-control", prompt: "Select Department", required: true%>
+                        <%= label f, :dpt_code %>
+                        <%= text_input f, :dpt_code, class: "form-control", pattern: ".{2,3}", required: true%>
                     </div>
                     <div class="form-group d-flex justify-content-center">
                         <button class="dbtn btn mr-4" phx-click="close_modals" data-dismiss="modal"><%= gettext("Cancel") %></button>
                         <button class="dbtn btn" type="submit"><%= gettext("Submit") %></button>
                     </div>
-                    </.form>
+                </.form>
             </div>
         </div>
     </div>

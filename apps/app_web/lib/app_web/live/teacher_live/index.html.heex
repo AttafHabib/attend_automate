@@ -1,0 +1,90 @@
+<div class="prof_nav m-0">
+    <h2 class="text-left">Teachers</h2>
+    <div class="flexSect">
+        <div class="flexInSect"  style="flex-grow: unset">
+            <div class={"searchexp #{assigns[:search_bar] && "active"}"}>
+            <.form let={f} for={:foo} phx-change="search" phx-submit="search">
+            <a href="#" phx-click="search_bar" phx-value-bar="teachers" class="btn sbtn">
+                <i class="fa fa-search fa-sm"></i>
+            </a>
+            <%= text_input f, :search, class: "form-control #{assigns[:search_bar] && "active"}", name: "value", autofocus: false %>
+        </.form>
+        </div>
+        <a href="#" phx-click="filter_btn" phx-value-btn="teacher" class="btn sbtn"><i class="fa fa-filter"></i></a>
+        <button class="btn sbtn" style="width: unset" phx-click="open_modals" phx-value-modal="add_teacher">
+            <i class="fa fa-plus pr-3"></i>
+            Teacher
+        </button>
+        </div>
+    </div>
+</div>
+<div class="row bg bg-white m-0" style="position: relative">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="dropdown editbox">
+            <button class="btn" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+            <div class="dropdown-menu">
+                <a href="#" class="dropdown-item">Edit Teacher</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-borderless">
+                <thead>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Department</th>
+                </thead>
+                <tbody>
+                <%= for teacher <- @teachers do %>
+                <tr>
+                    <td><%= String.capitalize(teacher.first_name) %></td>
+                    <td><%= String.capitalize(teacher.last_name) %></td>
+                    <td><%= teacher.department.name %></td>
+                </tr>
+                <% end %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="popups" phx-hook="modals" id="modals-div-12">
+    <%= if assigns[:modal] == "add_teacher" do %>
+    <div class="modal fade" id={assigns[:modal]}>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <span class="close" phx-click="close_modals" data-dismiss="modal">&times;</span>
+                    <h4 class="text-center" style="color: #812E23">Add Teacher</h4>
+                    <.form let={f} for={assigns[:changeset_teacher]} phx-submit="save">
+                    <div class="form-group">
+                        <%= label f, :first_name %>
+                        <%= text_input f, :first_name, value: assigns[:changeset_teacher].changes[:first_name], class: "form-control", required: true%>
+                    </div>
+                    <div class="form-group">
+                        <%= label f, :last_name %>
+                        <%= text_input f, :last_name, class: "form-control", required: true %>
+                    </div>
+                    <div class="form-group">
+                        <%= label f, :cnic %>
+                        <%= text_input f, :cnic, class: "form-control", required: true %>
+                    </div>
+                    <div class="form-group">
+                        <%= label f, :course %>
+                        <%= multiple_select(f, :course, @cour_dropdown, class: "form-control", required: true) %>
+                    </div>
+                    <div class="form-group">
+                        <%= label f, :department_id %>
+                        <%= select f, :department_id, @dpt_dropdown , class: "form-control", prompt: "Select Department", required: true%>
+                    </div>
+                    <div class="form-group d-flex justify-content-center">
+                        <button class="dbtn btn mr-4" phx-click="close_modals" data-dismiss="modal"><%= gettext("Cancel") %></button>
+                        <button class="dbtn btn" type="submit"><%= gettext("Submit") %></button>
+                    </div>
+                </.form>
+            </div>
+        </div>
+    </div>
+</div>
+<% end %>
+</div>

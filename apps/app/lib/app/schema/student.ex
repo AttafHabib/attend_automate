@@ -26,6 +26,7 @@ defmodule App.Schema.Student do
     field :user_id, :integer
 
     has_one(:user, App.Schema.User)
+    belongs_to(:department, App.Schema.Department)
 
     timestamp()
   end
@@ -35,13 +36,14 @@ defmodule App.Schema.Student do
   cnic
   roll_no
   address
+  department_id
+  phone_no
+  user_id
   |a
 
   @optional_fields ~w|
   last_name
   email
-  phone_no
-  user_id
   |a
 
 

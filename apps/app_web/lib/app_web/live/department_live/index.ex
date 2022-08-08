@@ -1,20 +1,17 @@
-defmodule AppWeb.CourseLive.Index do
+defmodule AppWeb.DepartmentLive.Index do
   use AppWeb, :live_view
   import AppWeb.Components.BreadCrumb
 
-  alias App.Helpers
-  alias App.Schema.{Course, Department}
   alias App.Context
+  alias App.Schema.Department
 
   def mount(params, session, socket) do
-    courses = Context.list(Course) |> Context.preload_selective([:department])
-    user = Helpers.get_current_user(session["guardian_default_token"])
+    departments = Context.list(Department)
 
     {
       :ok,
       socket
-      |> assign(:courses, courses)
-      |> assign(:user, user)
+      |> assign(:departments, departments)
     }
   end
 
@@ -39,20 +36,20 @@ defmodule AppWeb.CourseLive.Index do
   end
 
   @impl true
-  def handle_event("save", %{"course" => params}, socket) do
+  def handle_event("save", %{"department" => params}, socket) do
     IO.inspect("=============params=============")
     IO.inspect(params)
     IO.inspect("=============params=============")
 
-    case Context.create(Course, params) do
+    case Context.create(Department, params) do
       {:ok, dpt} ->
         if connected?(socket), do: Process.send_after(self(), "close_modals", 300)
 
-        courses = Context.list(Course) |> Context.preload_selective([:department])
+        departments = Context.list(Department)
         {
           :noreply,
           socket
-          |> assign(:courses, courses)
+          |> assign(:departments, departments)
         }
       {:error, changeset_} -> {:noreply, socket}
 
@@ -64,15 +61,13 @@ defmodule AppWeb.CourseLive.Index do
   def handle_event("open_modals", %{"modal" => modal}, socket) do
     if connected?(socket), do: Process.send_after(self(), "open_modals", 300)
 
-    changeset_course = Context.change(Course, %Course{})
-    dpt_dropdown = Context.list_dropdown(Department, :name)
+    changeset_dpt = Context.change(Department, %Department{})
 
     {
       :noreply,
       socket
       |> assign(:modal, modal)
-      |> assign(:changeset_course, changeset_course)
-      |> assign(:dpt_dropdown, dpt_dropdown)
+      |> assign(:changeset_dpt, changeset_dpt)
     }
   end
 
@@ -103,7 +98,11 @@ defmodule AppWeb.CourseLive.Index do
     {
       :noreply,
       assign(socket, :modal, nil)
+      #      push_event(
+      #        assign(socket, :modal, nil),
+      #        "close_modals",
+      #        %{"modal" => socket.assigns.modal}
+      #      )
     }
   end
-
 end

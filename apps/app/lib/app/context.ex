@@ -46,6 +46,12 @@ defmodule App.Context do
     |> Repo.all()
   end
 
+  def list_dropdown(model, key) do
+    (from model)
+    |> Repo.all
+    |> Enum.map(&({Map.get(&1, key),&1.id}))
+  end
+
   def count(model)do
     Repo.aggregate(model, :count)
   end

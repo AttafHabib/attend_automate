@@ -18,7 +18,7 @@ defmodule App.Context.Students do
 
   """
   def list_students() do
-    raise "TODO"
+    Repo.all(Student)
   end
 
   @doc """
