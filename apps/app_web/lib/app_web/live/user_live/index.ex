@@ -4,7 +4,7 @@ defmodule AppWeb.UserLive.Index do
 
   alias App.Context
   alias App.Context.{Users, Students, Roles, Teachers}
-  alias App.Schema.{User, Role, Student}
+  alias App.Schema.{User, Role, Student, Teacher, UserRole}
 
   # alias App.Helpers
 
@@ -30,19 +30,6 @@ defmodule AppWeb.UserLive.Index do
 
   @impl true
   def handle_event("validate", %{"_target" => ["user", "role", role], "user" => %{"role" => params}} = p, socket) do
-#    case params["role"] do
-#      "true" -> r_type = String.to_atom(role)
-#                role = Roles.get_by_role(r_type)
-#
-##                params = %{"user_role"}
-#
-#                User.changeset_role(%User{}, params)
-#
-#                user = %User{}
-#                       |> Context.preload_selective([r_type])
-#                changeset_user = Context.change(User, user)
-#      "false" -> ""
-#    end
     role = (params[role] == "true") && role
 
     dropdown_profile = case role do
@@ -57,34 +44,33 @@ defmodule AppWeb.UserLive.Index do
       socket
       |> assign(:role, role)
       |> assign(:dropdown_profile, dropdown_profile)
+      |> assign(:changeset_user, Context.change(User, %User{}))
+      |> assign(:u_password, nil)
     }
   end
 
   @impl true
   def handle_event("validate", %{"_target" => ["user", "type", role_type], "user" => %{"type" => params}} = p, socket) do
-    IO.inspect("=============params=============")
-    IO.inspect(params)
-    IO.inspect("=============params=============")
-    case role_type do
-      "student" -> student = Context.get(Student, params[role_type])
-                   params = %{
-                     username: Enum.join(["#{student.first_name}", "#{student.last_name}", " "]),
-                     email: student.email,
-                     password: App.PasswordGenerator.generate(),
-                   }
-
-                   changeset_user = Context.change(User, %User{}, params)
-
-                   if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
-
-                   {:noreply,
-                     socket
-                     |> assign(:changeset_user, changeset_user)
-                     |> assign(:u_password, params[:password])
-                   }
-
-      "teacher" -> ""
+    data = case role_type do
+      "student" -> Context.get(Student, params[role_type])
+      "teacher" -> Context.get(Teacher, params[role_type])
     end
+
+    params = %{
+      username: Enum.join(["#{data.first_name}", "#{data.last_name}", " "]),
+      email: data.email,
+      password: App.PasswordGenerator.generate(),
+    }
+
+    changeset_user = Context.change(User, %User{}, params)
+
+    if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
+
+    {:noreply,
+      socket
+      |> assign(:changeset_user, changeset_user)
+      |> assign(:u_password, params[:password])
+    }
   end
 
   def handle_event("show_password", _, socket) do
@@ -138,15 +124,21 @@ defmodule AppWeb.UserLive.Index do
 #  end
   
   @impl true
-  def handle_event("save", params, socket) do
-#    Context.create(Student, params)
-    IO.inspect("=============params=============")
-    IO.inspect(params)
-    IO.inspect("=============params=============")
-    {
-      :noreply,
-      socket
-    }
+  def handle_event("save", %{"user" => params}, socket) do
+    case Context.create(User, params) do
+      {:ok, user} -> role = Roles.get_by_role(socket.assigns.role)
+                     Context.create(UserRole, %{user_id: user.id, role_id: role.id})
+
+                     student = Context.get(Student, params["type"]["student"])
+                     Context.update(Student, student, %{user_id: user.id})
+
+                     users = Users.list_users()
+
+                     if connected?(socket), do: Process.send_after(self(), "close_modals", 300)
+
+                     {:noreply, assign(socket, :users, users)}
+      {:error, changeset} -> {:noreply, socket}
+    end
   end
 
   @impl true

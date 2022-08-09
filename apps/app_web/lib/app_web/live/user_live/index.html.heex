@@ -29,17 +29,17 @@
         <div class="table-responsive">
             <table class="table table-borderless">
                 <thead>
-                <th>Name</th>
-                <th>Type</th>
+                <th>UserName</th>
                 <th>Email</th>
+                <th>Type</th>
                 <th>Profile</th>
                 </thead>
                 <tbody>
                 <%= for user <- @users do %>
                 <tr>
                     <td><%= user.username %></td>
-                    <td><%= String.capitalize(user.user_role && user.user_role.role.name || "") %></td>
                     <td><%= user.email %></td>
+                    <td><%= String.capitalize(user.user_role && user.user_role.role.name || "") %></td>
                     <%= if user.user_role.role.name == "student" do %>
                     <td><a href={Routes.student_show_path(@socket, :show, user.student.id)}><%= user.student.first_name <> " " <> user.student.last_name %></a></td>
                     <% else %>
@@ -95,10 +95,12 @@
                     <div class="form-group">
                         <%= label f, :username %>
                         <%= text_input f, :username, value: assigns[:changeset_user].changes[:username], disabled: true, class: "form-control", required: true%>
+                        <%= hidden_input f, :username, value: assigns[:changeset_user].changes[:username] %>
                     </div>
                     <div class="form-group">
                         <%= label f, :email %>
                         <%= text_input f, :email, value: assigns[:changeset_user].changes[:email], disabled: true, class: "form-control", required: true %>
+                        <%= hidden_input f, :email, value: assigns[:changeset_user].changes[:email] %>
                     </div>
                     <div class="form-group">
                         <%= label f, :password %>
@@ -108,6 +110,7 @@
                             <% else %>
                             <%= password_input f, :password, value: assigns[:u_password], disabled: true, class: "form-control", required: true %>
                             <% end %>
+                            <%= hidden_input f, :password, value: assigns[:u_password] %>
 
                             <i phx-click="show_password" class="fa-solid fa-eye" style="position: absolute; cursor: pointer; top: 36%; right: 10px;"></i>
                         </div>
