@@ -1,0 +1,1 @@
+defmodule(App.PasswordGenerator, do: use(RandomPassword))

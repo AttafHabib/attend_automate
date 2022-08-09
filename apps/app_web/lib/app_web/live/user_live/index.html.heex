@@ -61,39 +61,57 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <span class="close" phx-click="close_modals" data-dismiss="modal">&times;</span>
-                    <h4 class="text-center" style="color: #812E23">Add User</h4>
+                    <h4 class="text-center" style="color: #812E23">Create User</h4>
                     <.form let={f} for={assigns[:changeset_user]} phx-submit="save">
+
+                    <div class="form-group row justify-content-around">
+                        <div class="custom-control custom-checkbox">
+                            <%= checkbox :f, :role, class: "custom-control-input", checked: @role == "admin", phx_change: "validate", id: "role_admin",  name: "user[role][admin]" %>
+                            <label class="custom-control-label" for="role_admin">Admin</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <%= checkbox :f, :role, class: "custom-control-input", checked: @role == "student", phx_change: "validate", id: "role_student",  name: "user[role][student]" %>
+                            <label class="custom-control-label" for="role_student">Student</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <%= checkbox :f, :role, class: "custom-control-input", checked: @role == "teacher", phx_change: "validate", id: "role_teacher",  name: "user[role][teacher]" %>
+                            <label class="custom-control-label" for="role_teacher">Teacher</label>
+                        </div>
+                    </div>
+
+                    <%= if @role == "admin" do %>
+                    <%= label :user, :teacher %>
+                    <%= select(:user, :teacher, [], class: "form-control", prompt: "Select teacher to create user", required: true) %>
+                    <% end %>
+                    <%= if @role == "student" do %>
+                    <%= label :user, :student %>
+                    <%= select(:user, :student, @dropdown_profile, name: "user[type][student]", phx_change: "validate", class: "form-control", prompt: "Select student to create user", required: true) %>
+                    <% end %>
+                    <%= if @role == "teacher" do %>
+                    <%= label :user, :teacher %>
+                    <%= select(:user, :teacher, @dropdown_profile, name: "user[type][teacher]", phx_change: "validate", class: "form-control", prompt: "Select teacher to create user", required: true) %>
+                    <% end %>
+
                     <div class="form-group">
                         <%= label f, :username %>
-                        <%= text_input f, :username, value: assigns[:changeset_user].changes[:username], class: "form-control", required: true%>
+                        <%= text_input f, :username, value: assigns[:changeset_user].changes[:username], disabled: true, class: "form-control", required: true%>
                     </div>
                     <div class="form-group">
                         <%= label f, :email %>
-                        <%= text_input f, :email, class: "form-control", required: true %>
+                        <%= text_input f, :email, value: assigns[:changeset_user].changes[:email], disabled: true, class: "form-control", required: true %>
                     </div>
                     <div class="form-group">
                         <%= label f, :password %>
-                        <%= password_input f, :password, class: "form-control", required: true %>
-                    </div>
-                    <div class="form-group">
-                        <%= label f, :role %>
-                    </div>
-                    <%= for role <- assigns[:roles] || [] do %>
-                    <div class="form-group">
-                        <div class="custom-control custom-checkbox">
-                            <%= checkbox f, :role, class: "custom-control-input",phx_change: "validate", checked: (assigns[:user_params]["role"] == "#{role.id}") , id: "role_#{role.id}",  name: "user[role][#{role.id}]" %>
-                            <label class="custom-control-label" for={"role_#{role.id}"}><%= role.name %></label>
+                        <div class="row m-0" style="position: relative">
+                            <%= if assigns[:show_password] do %>
+                            <%= text_input f, :password, value: assigns[:u_password], disabled: true, class: "form-control", required: true %>
+                            <% else %>
+                            <%= password_input f, :password, value: assigns[:u_password], disabled: true, class: "form-control", required: true %>
+                            <% end %>
+
+                            <i phx-click="show_password" class="fa-solid fa-eye" style="position: absolute; cursor: pointer; top: 36%; right: 10px;"></i>
                         </div>
                     </div>
-                    <% end %>
-                    <%= if assigns[:user_params]["role"] == "2" do %>
-                        <%= label f, :student %>
-                        <%= select(f, :student, @profiles, class: "form-control", required: true) %>
-                    <% end %>
-                    <%= if assigns[:user_params]["role"] == "3" do %>
-                        <%= label f, :teacher %>
-                        <%= select(f, :teacher, [], class: "form-control", required: true) %>
-                    <% end %>
                     <div class="form-group d-flex justify-content-center">
                         <button class="dbtn btn mr-4" phx-click="close_modals" data-dismiss="modal"><%= gettext("Cancel") %></button>
                         <button class="dbtn btn" type="submit"><%= gettext("Submit") %></button>

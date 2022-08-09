@@ -41,7 +41,8 @@ defmodule App.MixProject do
       {:argon2_elixir, "~> 3.0"},
       {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
-      {:jason, "~> 1.2"}
+      {:jason, "~> 1.2"},
+      {:random_password, "~> 1.1"}
     ]
   end
 

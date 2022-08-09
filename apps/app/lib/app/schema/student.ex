@@ -1,5 +1,6 @@
 defmodule App.Schema.Student do
   use App.Schema
+#  import Ecto.Changeset
 
   alias App.SchemaHelpers
 
@@ -26,7 +27,11 @@ defmodule App.Schema.Student do
     field :user_id, :integer
 
     has_one(:user, App.Schema.User)
+
     belongs_to(:department, App.Schema.Department)
+
+    has_many(:student_courses, App.Schema.StudentCourse)
+    has_many(:courses, through: [:student_courses, :course_offer, :course])
 
     timestamp()
   end
@@ -38,18 +43,28 @@ defmodule App.Schema.Student do
   address
   department_id
   phone_no
-  user_id
+  email
   |a
 
   @optional_fields ~w|
   last_name
-  email
+  user_id
   |a
 
 
   def changeset(student, attrs \\ %{}) do
     student
     |> cast(attrs, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
+    |> validate_length(:first_name, max: 30)
+    |> validate_length(:cnic, is: 13)
+    |> SchemaHelpers.custom_error()
+  end
+
+  def changeset_s_course(student, attrs \\ %{}) do
+    student
+    |> cast(attrs, @required_fields ++ @optional_fields)
+    |> cast_assoc(:student_courses, with: &App.Schema.StudentCourse.changeset/2)
     |> validate_required(@required_fields)
     |> validate_length(:first_name, max: 30)
     |> validate_length(:cnic, is: 13)

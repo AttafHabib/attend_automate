@@ -3,7 +3,7 @@ defmodule AppWeb.UserLive.Index do
   import AppWeb.Components.BreadCrumb
 
   alias App.Context
-  alias App.Context.{Users, Students}
+  alias App.Context.{Users, Students, Roles, Teachers}
   alias App.Schema.{User, Role, Student}
 
   # alias App.Helpers
@@ -29,23 +29,92 @@ defmodule AppWeb.UserLive.Index do
   end
 
   @impl true
-  def handle_event("validate", %{"_target" => ["user", "role", role_id], "user" => params} = params_, socket) do
-    if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
+  def handle_event("validate", %{"_target" => ["user", "role", role], "user" => %{"role" => params}} = p, socket) do
+#    case params["role"] do
+#      "true" -> r_type = String.to_atom(role)
+#                role = Roles.get_by_role(r_type)
+#
+##                params = %{"user_role"}
+#
+#                User.changeset_role(%User{}, params)
+#
+#                user = %User{}
+#                       |> Context.preload_selective([r_type])
+#                changeset_user = Context.change(User, user)
+#      "false" -> ""
+#    end
+    role = (params[role] == "true") && role
 
-    profiles = case role_id do
-      "2" -> Students.list_students(false) |> Enum.map(&({&1.first_name <> " " <> &1.last_name, &1.id}))
-      "3" -> []
+    dropdown_profile = case role do
+      "admin" -> []
+      "teacher" -> Teachers.list_teachers(false) |> Enum.map(&({&1.first_name <> " " <> &1.last_name, &1.id}))
+      "student" -> Students.list_students(false) |> Enum.map(&({&1.first_name <> " " <> &1.last_name, &1.id}))
     end
 
-    params = update_in(params["role"], fn x -> role_id end)
+    if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
 
-    {
-      :noreply,
+    {:noreply,
       socket
-      |> assign(:user_params, params)
-      |> assign(:profiles, profiles)
+      |> assign(:role, role)
+      |> assign(:dropdown_profile, dropdown_profile)
     }
   end
+
+  @impl true
+  def handle_event("validate", %{"_target" => ["user", "type", role_type], "user" => %{"type" => params}} = p, socket) do
+    IO.inspect("=============params=============")
+    IO.inspect(params)
+    IO.inspect("=============params=============")
+    case role_type do
+      "student" -> student = Context.get(Student, params[role_type])
+                   params = %{
+                     username: Enum.join(["#{student.first_name}", "#{student.last_name}", " "]),
+                     email: student.email,
+                     password: App.PasswordGenerator.generate(),
+                   }
+
+                   changeset_user = Context.change(User, %User{}, params)
+
+                   if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
+
+                   {:noreply,
+                     socket
+                     |> assign(:changeset_user, changeset_user)
+                     |> assign(:u_password, params[:password])
+                   }
+
+      "teacher" -> ""
+    end
+  end
+
+  def handle_event("show_password", _, socket) do
+    if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
+    {:noreply, assign(socket, :show_password, !socket.assigns[:show_password])}
+  end
+
+#  role = Roles.get_by_role(role_type)
+
+  #  @impl true
+#  def handle_event("validate", %{"_target" => ["user", "role", role_id], "user" => params} = params_, socket) do
+#    IO.inspect("=============_params=============")
+#    IO.inspect(params_)
+#    IO.inspect("=============_params=============")
+#    if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
+#
+#    profiles = case role_id do
+#      "2" -> Students.list_students(false) |> Enum.map(&({&1.first_name <> " " <> &1.last_name, &1.id}))
+#      "3" -> []
+#    end
+#
+#    params = update_in(params["role"], fn x -> role_id end)
+#
+#    {
+#      :noreply,
+#      socket
+#      |> assign(:user_params, params)
+#      |> assign(:profiles, profiles)
+#    }
+#  end
 
 #  @impl true
 #  def handle_event("validate", %{"user" => params} = _params, socket) do
@@ -77,7 +146,6 @@ defmodule AppWeb.UserLive.Index do
     {
       :noreply,
       socket
-      |> assign(:modal, nil)
     }
   end
 
@@ -96,16 +164,27 @@ defmodule AppWeb.UserLive.Index do
     if connected?(socket), do: Process.send_after(self(), "open_modals", 300)
 
     changeset_user = Context.change(User, %User{})
-    roles = Context.list(Role, 0)
+#    roles = Context.list(Role, 0)
 
     {
       :noreply,
       socket
       |> assign(:modal, modal)
       |> assign(:changeset_user, changeset_user)
-      |> assign(:roles, roles)
-      |> assign(:profiles, [])
+#      |> assign(:roles, roles)
+      |> assign(:role, "admin")
+#      |> assign(:profiles, [])
     }
+  end
+
+  @impl true
+  def handle_event(event, params, socket) do
+    IO.inspect("=============event=============")
+    IO.inspect(event)
+    IO.inspect("=============params=============")
+    IO.inspect(params)
+    IO.inspect("=============params=============")
+    {:noreply, socket}
   end
 
   @impl true

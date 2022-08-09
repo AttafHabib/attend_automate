@@ -18,6 +18,7 @@ defmodule App.Schema.User do
 
     has_one(:user_role, App.Schema.UserRole)
     has_one :student, App.Schema.Student, foreign_key: :user_id
+    has_one :teacher, App.Schema.Teacher, foreign_key: :user_id
 
     timestamp()
   end
@@ -37,6 +38,18 @@ defmodule App.Schema.User do
     |> validate_email(:email)
     |> put_password_hash()
   end
+
+  def changeset_role(user, attrs) do
+    user
+    |> cast(attrs, @required_fields)
+    |> cast_assoc(:user_role, with: &App.Schema.UserRole.changeset/2)
+    |> validate_required(@required_fields)
+    |> validate_length(:username, min: 3, max: 30)
+    |> SchemaHelpers.custom_error() #Must be before any custom message as it appends field with error reason
+    |> validate_email(:email)
+    |> put_password_hash()
+  end
+
 
   @spec put_password_hash(%Ecto.Changeset{})::%Ecto.Changeset{}
   defp put_password_hash(%Ecto.Changeset{valid?: true, changes: %{password: password}}=changeset) do

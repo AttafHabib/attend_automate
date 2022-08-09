@@ -25,7 +25,7 @@ defmodule App.Context.Students do
   Returns the list of students having no user profiles.
   ## Examples
 
-       iex> list_students(true)
+       iex> list_students(false)
         [%Student{}, ...]
   """
   def list_students(profile = false) do
@@ -106,5 +106,12 @@ defmodule App.Context.Students do
   """
   def change_student(%Student{} = student, _attrs \\ %{}) do
     Student.changeset(student, _attrs)
+  end
+
+  def add_s_courses(%Student{} = student, params) do
+    student
+    |> Repo.preload([:student_courses])
+    |> Student.changeset_s_course(params)
+    |> Repo.update
   end
 end

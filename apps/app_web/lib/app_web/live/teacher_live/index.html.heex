@@ -32,6 +32,7 @@
                 <th>FirstName</th>
                 <th>LastName</th>
                 <th>Department</th>
+                <th>Courses</th>
                 </thead>
                 <tbody>
                 <%= for teacher <- @teachers do %>
@@ -39,6 +40,7 @@
                     <td><%= String.capitalize(teacher.first_name) %></td>
                     <td><%= String.capitalize(teacher.last_name) %></td>
                     <td><%= teacher.department.name %></td>
+                    <td><%= Enum.map(teacher.courses, &(&1.name))|> Enum.join(", ") %></td>
                 </tr>
                 <% end %>
                 </tbody>
@@ -70,8 +72,20 @@
                         <%= text_input f, :cnic, class: "form-control", pattern: ".{13,13}", required: true %>
                     </div>
                     <div class="form-group">
-                        <%= label f, :course %>
-                        <%= multiple_select(f, :course, @cour_dropdown, class: "form-control", required: true) %>
+                        <%= label f, :email %>
+                        <%= text_input f, :email, type: "email", class: "form-control", requird: true %>
+                    </div>
+                    <div class="form-group">
+                        <%= label f, :address %>
+                        <%= text_input f, :address, class: "form-control", required: true %>
+                    </div>
+                    <div class="form-group">
+                        <%= label f, :phone_no %>
+                        <%= text_input f, :phone_no, class: "form-control", required: true %>
+                    </div>
+                    <div class="form-group">
+                        <%= label f, :course_offers %>
+                        <%= multiple_select(f, :course_offers, @cour_dropdown, class: "form-control", required: true) %>
                     </div>
                     <div class="form-group">
                         <%= label f, :department_id %>

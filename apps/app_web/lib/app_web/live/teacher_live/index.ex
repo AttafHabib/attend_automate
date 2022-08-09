@@ -6,6 +6,7 @@ defmodule AppWeb.TeacherLive.Index do
 
   def mount(params, session, socket) do
     teachers = Context.list(Teacher)
+               |> Context.preload_selective([:department, :courses])
 
     {:ok,
       socket
@@ -26,7 +27,9 @@ defmodule AppWeb.TeacherLive.Index do
   def handle_event("open_modals", %{"modal" => modal}, socket) do
     if connected?(socket), do: Process.send_after(self(), "open_modals", 300)
 
-    changeset_teacher = Context.change(Teacher, %Teacher{})
+    teacher = %Teacher{}
+              |> Context.preload_selective([:course_offers])
+    changeset_teacher = Context.change(Teacher, teacher)
     dpt_dropdown = Context.list_dropdown(Department, :name)
     cour_dropdown = Context.list_dropdown(Course, :name)
 
@@ -52,11 +55,25 @@ defmodule AppWeb.TeacherLive.Index do
   end
 
   @impl true
-  def handle_event("save", params, socket) do
-    IO.inspect("=============params=============")
-    IO.inspect(params)
-    IO.inspect("=============params=============")
-    {:noreply, socket}
+  def handle_event("save", %{"teacher" => params}, socket) do
+    case Context.create(Teacher, params) do
+      {:ok, teacher} -> params_ = params["course_offers"]
+                                 |> Enum.map(&(%{"course_id" => &1, "teacher_id" => teacher.id}))
+
+                        params = Map.put(params, "course_offers", params_)
+                        Teachers.add_courses(teacher, params)
+
+                        if connected?(socket), do: Process.send_after(self(), "close_modals", 300)
+
+                        teachers = Context.list(Teacher)
+                                   |> Context.preload_selective([:department, :courses])
+
+                        {:ok,
+                          socket
+                          |> assign(:teachers, teachers)
+                        }
+      {:error_changeset} -> {:noreply, socket}
+    end
   end
 
   @impl true

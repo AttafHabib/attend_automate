@@ -22,6 +22,19 @@ defmodule App.Context.Teachers do
   end
 
   @doc """
+  Returns the list of teachers having no user profiles.
+  ## Examples
+
+       iex> list_teachers(false)
+        [%Student{}, ...]
+  """
+  def list_teachers(profile = false) do
+    from(t in Teacher,
+      where: is_nil(t.user_id)
+    )|> Repo.all
+  end
+
+  @doc """
   Gets a single teacher.
 
   Raises `Ecto.NoResultsError` if the Teacher does not exist.
@@ -101,4 +114,12 @@ defmodule App.Context.Teachers do
   def change_teacher(%Teacher{} = teacher, attrs \\ %{}) do
     Teacher.changeset(teacher, attrs)
   end
+
+  def add_courses(%Teacher{} = teacher, params) do
+    teacher
+    |> Repo.preload([:course_offers])
+    |> Teacher.changeset_course(params)
+    |> Repo.update
+  end
+
 end

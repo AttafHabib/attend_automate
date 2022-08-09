@@ -21,8 +21,8 @@ defmodule App.Schema.UserRole do
   |a
 
 
-  def changeset(student, attrs \\ %{}) do
-    student
+  def changeset(user_role, attrs \\ %{}) do
+    user_role
     |> cast(attrs, @required_fields)
     |> validate_required(@required_fields)
     |> SchemaHelpers.custom_error()

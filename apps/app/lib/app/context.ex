@@ -46,6 +46,18 @@ defmodule App.Context do
     |> Repo.all()
   end
 
+  def list_dropdown(model, keys) when is_list keys do
+    (from model)
+    |> Repo.all
+    |> Enum.map(
+         fn item_ ->
+           key_ = for k <- keys do
+             "#{Map.get(item_, k)}"
+           end
+           {Enum.join(key_, " "), item_.id}
+         end)
+  end
+
   def list_dropdown(model, key) do
     (from model)
     |> Repo.all
@@ -64,6 +76,12 @@ defmodule App.Context do
   @spec get(struct(), binary()) :: struct() | nil
   def get(model, id) do
     Repo.get(model, id)
+  end
+
+  def get_last(model) do
+    model
+    |> last(:id)
+    |> Repo.one
   end
 
   def get_selected(model, id) do

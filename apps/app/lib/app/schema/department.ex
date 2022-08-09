@@ -1,12 +1,12 @@
 defmodule App.Schema.Department do
-  use Ecto.Schema
+  use App.Schema
   import Ecto.Changeset
 
   schema "departments" do
     field :name, :string
     field :dpt_code, :string
 
-    timestamps()
+    timestamp()
 
     has_many(:students, App.Schema.Student)
   end
