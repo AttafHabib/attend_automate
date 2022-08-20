@@ -7,7 +7,8 @@ body{
     text-align: left;
 }
 :root {
-    --text_color: #3c4b64
+    --text_color: #3c4b64;
+    --black: #000
 }
 #wrapper{
     height: 100%;

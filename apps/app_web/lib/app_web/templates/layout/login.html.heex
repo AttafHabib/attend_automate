@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/fontawesome.min.css" integrity="sha384-zIaWifL2YFF1qaDiAo0JFgsmasocJ/rqu7LKYH8CoBEXqGbb9eO+Xi3s6fQhgFWM" crossorigin="anonymous">
     <%= live_title_tag assigns[:page_title] || "App", suffix: " · Phoenix Framework" %>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn,"/assets/app.css")}/>
-    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn,"/assets/coreui.min.css")}/>
 </head>
 <body>
 <%= @inner_content %>

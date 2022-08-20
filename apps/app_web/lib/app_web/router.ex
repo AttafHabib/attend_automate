@@ -33,7 +33,7 @@ defmodule AppWeb.Router do
   end
 
   scope "/", AppWeb do
-    pipe_through [:browser, :auth]
+    pipe_through [:browser, :auth, :login]
 
 #    get "/", PageController, :index
     live "/", SessionLive.Login, :login
