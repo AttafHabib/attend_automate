@@ -46,5 +46,10 @@
   role_id: role2.id
 })
 
-student1 = App.Schema.Student.changeset(student1, %{user_id: user.id})
+{:ok, dpt} = App.Repo.insert(%App.Schema.Department{
+  name: "ComputerScience",
+  dpt_code: "CS",
+})
+
+student1 = App.Schema.Student.changeset(student1, %{user_id: user.id, department_id: dpt.id})
 {:ok, student1} = App.Repo.update(student1)

@@ -50,6 +50,9 @@ defmodule AppWeb.Router do
     live "/students/:id", StudentLive.Show, :show, container: {:section, class: "section_container"}
     live "/departments", DepartmentLive.Index, :index, container: {:section, class: "section_container"}
     live "/teachers", TeacherLive.Index, :index, container: {:section, class: "section_container"}
+
+    live "/attendance", AttendanceLive.Index, :index, container: {:section, class: "section_container"}
+
     get "/logout", SessionController, :logout
   end
 

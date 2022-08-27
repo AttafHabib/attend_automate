@@ -24,6 +24,13 @@ erl_crash.dump
 
 /attend_automate.iml
 
+/attend_py/.idea
+/attend_py/venv
+*.pyc
+
+
+.tool-versions
+
 /.idea
 /.idea/*
 

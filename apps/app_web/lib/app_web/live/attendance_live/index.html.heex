@@ -1,0 +1,18 @@
+<div class="prof_nav m-0 row">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-10">
+        <h2 class="text-left">Attendance</h2>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2 col-2 d-flex justify-content-end">
+        <button class="btn sbtn" style="width: unset" phx-click="get_face">
+            <i class="fa fa-plus pr-3"></i>
+            Save Face
+        </button>
+    </div>
+</div>
+<%= if assigns[:action] == :get_face do %>
+<div class="row m-0 p-3" style="height: 400px;">
+    <div class="col-12 bg bg-white p-0" style="border: 1px solid lightgray">
+        <img height="100%" width="100%">
+    </div>
+</div>
+<% end %>
