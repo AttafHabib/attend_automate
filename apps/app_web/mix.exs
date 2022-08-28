@@ -50,7 +50,8 @@ defmodule AppWeb.MixProject do
       {:gettext, "~> 0.18"},
       {:app, in_umbrella: true},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:httpoison, "~> 1.8.0"}
     ]
   end
 

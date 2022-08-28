@@ -20,4 +20,4 @@ def get_last_dir(path):
     if not sorted_paths:
         return 0
     else:
-        return 1
+        return os.path.splitext(sorted_paths[-1])[0]

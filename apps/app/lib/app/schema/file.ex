@@ -6,7 +6,10 @@ defmodule App.Schema.File do
     field :path, :string
     field :mime, :string
 
-    timestamp()
+
+    belongs_to :user, App.Schema.User
+
+    timestamps()
   end
 
   @doc false

@@ -26,7 +26,7 @@ import "phoenix_html"
 // Establish Phoenix Socket and LiveView configuration.
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
-// import 'bootstrap'
+import 'bootstrap'
 // import jq 'jquery'
 // import topbar from "../vendor/topbar"
 import jQuery from "jquery"

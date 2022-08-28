@@ -1,0 +1,25 @@
+<div class="prof_nav m-0 row">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-10 p-0">
+        <h2 class="text-left"><%= @student.first_name <> " " <> @student.last_name %></h2>
+    </div>
+</div>
+<div class="section bg bg-white">
+    <div class="row border-bottom m-0 pt-1 pb-1">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+            <p class="mt-1"><strong>Total images: <%= Enum.count @student.face_images %></strong></p>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-6 d-flex justify-content-end m-auto">
+            <button class="btn sbtn" style="width: unset" phx-click="get_face">
+                <i class="fa fa-plus pr-3"></i>
+                Save Face
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+            <%= if assigns[:face_image] do %>
+            <img src={"data:image/png;base64, #{assigns[:face_image]}"}/>
+            <% end %>
+        </div>
+    </div>
+</div>

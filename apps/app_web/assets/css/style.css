@@ -29,6 +29,9 @@ body{
 ul li a {
     color: white !important;
 }
+.table tr td{
+    vertical-align: unset;
+}
 td > a{
     color: var(--text_color) !important;
 }

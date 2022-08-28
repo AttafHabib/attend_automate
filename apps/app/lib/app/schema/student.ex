@@ -13,7 +13,7 @@ defmodule App.Schema.Student do
                roll_no: String.t(),
                address: String.t(),
                phone_no: String.t(),
-               user_id: binary
+#               user_id: binary
              }
 
   schema "students" do
@@ -24,16 +24,17 @@ defmodule App.Schema.Student do
     field :roll_no, :string
     field :address, :string
     field :phone_no, :string
-    field :user_id, :integer
+#    field :user_id, :integer
 
-    has_one(:user, App.Schema.User)
+    belongs_to :user, App.Schema.User
 
     belongs_to(:department, App.Schema.Department)
 
     has_many(:student_courses, App.Schema.StudentCourse)
     has_many(:courses, through: [:student_courses, :course_offer, :course])
+    has_many(:face_images, through: [:user,  :files])
 
-    timestamp()
+    timestamps()
   end
 
   @required_fields ~w|

@@ -18,6 +18,10 @@ defmodule AppWeb.AttendanceLive.Index do
 
   @impl true
   def handle_event("get_face", _, socket) do
+    port = Port.open(
+      {:spawn, "python3 main.py"},
+      [:binary, :nouse_stdio, {:packet, 4}]
+    )
 
     {
       :noreply,

@@ -20,6 +20,8 @@ defmodule App.Schema.User do
     has_one :student, App.Schema.Student, foreign_key: :user_id
     has_one :teacher, App.Schema.Teacher, foreign_key: :user_id
 
+    has_many :files, App.Schema.File
+
     timestamp()
   end
 
