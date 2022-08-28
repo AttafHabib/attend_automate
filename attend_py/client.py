@@ -10,6 +10,8 @@ app = Flask(__name__)
 @app.route("/user/<id>/extract")
 def get_user_face(id):
     face = get_single_face()
+    save_image(face[1], id)
+
     if face[0]:
         retval, buffer = cv2.imencode('.png', face[1])
         response = make_response(buffer.tobytes(), 200)
