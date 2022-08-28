@@ -1,5 +1,5 @@
-from pathlib import Path
+from directory_helper import get_path, get_last_dir
 
-curr_path = Path().absolute()
-proj_path = Path(curr_path).parents[0]
-uploads_path = Path.joinpath(proj_path, "uploads")
+path = get_path(2)
+
+last_image = get_last_dir(path)
