@@ -1,3 +1,4 @@
+import glob
 import os
 from pathlib import Path
 
@@ -16,8 +17,12 @@ def get_path(user_id):
     return user_images_path
 
 def get_last_dir(path):
-    sorted_paths = sorted(os.listdir(path))
+    sorted_paths = sorted(get_filepaths_with_glob(path, r'*[0-9]*.png'))
+    print(sorted_paths)
     if not sorted_paths:
         return 0
     else:
-        return os.path.splitext(sorted_paths[-1])[0]
+        return os.path.basename(sorted_paths[-1])[0]
+
+def get_filepaths_with_glob(root_path: str, file_regex: str):
+    return glob.glob(os.path.join(root_path, file_regex))

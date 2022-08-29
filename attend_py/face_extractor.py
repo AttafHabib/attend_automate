@@ -33,6 +33,6 @@ def get_single_face():
         cv2.destroyAllWindows()
         web_cam.release()
 
-        return (1, face)
+        return (1, face, image_)
     else:
         return (0, image_)

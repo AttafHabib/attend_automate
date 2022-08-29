@@ -53,8 +53,8 @@ defmodule AppWeb.Utils.Client do
       {:ok, %HTTPoison.Response{status_code: code, body: body}} when code == 200 ->
         {:ok, body}
 
-      {:ok, %HTTPoison.Response{body: {:error, reason}}} ->
-        {:error, reason}
+      {:ok, %HTTPoison.Response{body: {:error, data}}} ->
+        {:error, data}
 
       {:ok, %HTTPoison.Response{status_code: code, body: body}} when (code == 404) ->
         {:error, body}
@@ -119,10 +119,10 @@ defmodule AppWeb.Utils.Client do
   end
 
   defp process_response_body(body) do
-    cond do
-      body |> String.match?(~r|access denied|i) ->  {:error, "Access denied. You may not have permission to view this resource."}
-      body == "Internal Server Error" -> {:error, "Internal Server Error"}
-      true -> body
+    case Jason.decode(body) do
+      {:ok, %{"data" => data, "message" => "Image Extracted"}} -> data
+      {:ok, %{"data" => data, "message" => "Error"}} -> {:error, data}
+      {:error, %Jason.DecodeError{}} -> {:error, "Decoding Error"}
     end
   end
 
