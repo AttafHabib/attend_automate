@@ -23,9 +23,10 @@ defmodule AppWeb.Endpoint do
     only: ~w(assets fonts images favicon.ico robots.txt)
 
   plug Plug.Static,
-    at: "/uploads",
-    from: Path.expand("./uploads"),
-    gzip: false
+    at: "/",
+    from: "apps/app_web/priv/",
+    gzip: false,
+    only: ~w(uploads)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

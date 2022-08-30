@@ -6,7 +6,7 @@ defmodule App.Context.Students do
   import Ecto.Query, warn: false
   alias App.Repo
 
-  alias App.Schema.Student
+  alias App.Schema.{Student, File}
 
   @doc """
   Returns the list of students.
@@ -45,7 +45,15 @@ defmodule App.Context.Students do
       %Student{}
 
   """
-  def get_student!(id), do: Repo.one(from s in Student, where: s.id == ^id)
+  def get_student!(id), do:
+    (from s in Student,
+          where: s.id == ^id,
+          preload: [user: :files
+#            full_image: ^(from f in File, where: f.tag == "full_image"),
+#            face_images: ^(from f in File, where: f.tag == "face_image")
+          ]
+      )
+    |> Repo.one
 
   @doc """
   Creates a student.

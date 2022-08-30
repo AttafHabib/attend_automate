@@ -24,7 +24,8 @@ defmodule App.Schema.Student do
     field :roll_no, :string
     field :address, :string
     field :phone_no, :string
-#    field :user_id, :integer
+
+    #    field :user_id, :integer
 
     belongs_to :user, App.Schema.User
 
@@ -33,6 +34,7 @@ defmodule App.Schema.Student do
     has_many(:student_courses, App.Schema.StudentCourse)
     has_many(:courses, through: [:student_courses, :course_offer, :course])
     has_many(:face_images, through: [:user,  :files])
+    has_one(:full_image, through: [:user,  :files])
 
     timestamps()
   end
