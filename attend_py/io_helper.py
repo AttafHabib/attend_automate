@@ -8,5 +8,6 @@ def save_image(image, user_id):
     return ('%s.png' % new_img_no)
 def save_rect_image(image, user_id):
     path = get_path(user_id)
+    # print(path)
     cv2.imwrite('%s/%s.png' % (path, "face_rect"), image)
     return ("face_rect.png")

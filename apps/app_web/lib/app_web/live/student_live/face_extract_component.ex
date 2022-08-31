@@ -33,7 +33,7 @@ defmodule AppWeb.StudentLive.FaceExtractComponent do
     end
 
     if connected?(socket), do: Process.send_after(self(), "open_modals_show_full_image", 300)
-    if connected?(socket), do: Process.send_after(self(), "close_modals_show_full_image", 3000)
+    if connected?(socket), do: Process.send_after(self(), "close_modals_show_full_image", 10000)
 
 #    student = Students.get_student!(socket.assigns.student.id)
 #              |> Context.preload_selective([:user, :face_images])
