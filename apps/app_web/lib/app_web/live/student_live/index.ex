@@ -101,6 +101,16 @@ defmodule AppWeb.StudentLive.Index do
   end
 
   @impl true
+  def handle_event("show_student", %{"id" => id}, socket) do
+
+    {
+      :noreply,
+      socket
+      |> push_redirect(to: Routes.student_show_path(socket, :show, id))
+    }
+  end
+
+  @impl true
   def handle_event("close_modals", _, socket) do
     if connected?(socket), do: Process.send_after(self(), "close_modals", 300)
 

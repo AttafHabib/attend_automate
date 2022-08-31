@@ -9,6 +9,9 @@ defmodule App.Schema.Course do
     field :name, :string
 
     belongs_to(:department, App.Schema.Department)
+    has_one(:course_offer, App.Schema.CourseOffer)
+
+    has_many(:students, through: [:course_offer, :student_courses, :student])
 
     timestamp()
   end

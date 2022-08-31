@@ -30,11 +30,12 @@
                 <th>Profile</th>
                 <th>
                     <div class="dropdown float-right">
-                    <button class="btn" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
-                    <div class="dropdown-menu">
-                        <a href="#" class="dropdown-item">Edit User</a>
+                        <button class="btn" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-item">Edit User</a>
+                        </div>
                     </div>
-                </div></th>
+                </th>
                 </thead>
                 <tbody>
                 <%= for user <- @users do %>
@@ -44,13 +45,10 @@
                     <td><%= String.capitalize(user.user_role && user.user_role.role.name || "") %></td>
                     <%= if user.user_role.role.name == "student" do %>
                     <td><a href={Routes.student_show_path(@socket, :show, user.student.id)}><%= user.student.first_name <> " " <> user.student.last_name %></a></td>
-                    <td>
-                    <a style="width: 100px;" class="btn sbtn" href={Routes.student_face_extract_path(@socket, :show, user.student.id, "extract")}>Add faces</a>
-                    </td>
                     <% else %>
                     <td></td>
-                    <td></td>
                     <% end %>
+                    <td></td>
                 </tr>
                 <% end %>
                 </tbody>

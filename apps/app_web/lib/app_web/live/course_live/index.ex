@@ -7,7 +7,7 @@ defmodule AppWeb.CourseLive.Index do
   alias App.Context
 
   def mount(params, session, socket) do
-    courses = Context.list(Course) |> Context.preload_selective([:department])
+    courses = Context.list(Course) |> Context.preload_selective([:department, :students])
     user = Helpers.get_current_user(session["guardian_default_token"])
 
     {
@@ -58,6 +58,14 @@ defmodule AppWeb.CourseLive.Index do
 
     end
 
+  end
+
+  @impl true
+  def handle_event("show_course", %{"id" => id}, socket) do
+    {:noreply,
+      socket
+      |> push_redirect(to: Routes.course_show_path(socket, :show, id))
+    }
   end
 
   @impl true

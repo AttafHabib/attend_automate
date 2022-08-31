@@ -1,40 +1,37 @@
 <div class="prof_nav m-0 row">
-    <div class="col-lg-10 col-md-10 col-sm-10 col-10 p-0">
-        <h2 class="text-left"><%= @student.first_name <> " " <> @student.last_name %></h2>
-    </div>
-</div>
-<div class="section bg bg-white">
-    <div class="row border-bottom m-0 pt-1 pb-1">
-        <div class="col-lg-6 col-md-6 col-sm-6 col-6">
-            <p class="mt-1"><strong>Total images: <%= get_total_faces(@student) %></strong></p>
+    <div class="section bg bg-white">
+        <div class="row border-bottom m-0 pt-1 pb-1">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                <p class="mt-1"><strong>Total images: <%= get_total_faces(@student) %></strong></p>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-6 d-flex justify-content-end m-auto">
+                <button class="btn sbtn" style="width: unset" phx-click="get_face" phx-target={@myself}>
+                    <i class="fa fa-plus pr-3"></i>
+                    Add Face
+                </button>
+            </div>
         </div>
-        <div class="col-lg-6 col-md-6 col-sm-6 col-6 d-flex justify-content-end m-auto">
-            <button class="btn sbtn" style="width: unset" phx-click="get_face">
-                <i class="fa fa-plus pr-3"></i>
-                Save Face
-            </button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-12 p-4">
-            <%= for face <- @student.user.files do %>
-            <%= if face.tag == "face_image" do %>
-            <img width="150px" height="150px" src={Routes.static_path(@socket,"/#{face.path}")}>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-12 p-4">
+                <%= for face <- @student.user.files do %>
+                <%= if face.tag == "face_image" do %>
+                <img width="150px" height="150px" src={Routes.static_path(@socket,"/#{face.path}")}>
+                <% end %>
             <% end %>
-            <% end %>
-        </div>
-    </div>
-</div>
-<div class="popups" phx-hook="modals" id="modals-div-12">
-    <%= if assigns[:modal] == "show_full_image" do %>
-    <div class="modal fade" id={assigns[:modal]}>
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content m-auto" style="width: 400px; height: 400px">
-                <div class="modal-body">
-                    <img width="300px" height="300px" src={Routes.static_path(@socket,"/#{get_full_face(@student).path}")}>
-                </div>
             </div>
         </div>
     </div>
-    <% end %>
+    <div class="popups" phx-hook="modals" id="modals-div-12">
+        <%= if assigns[:modal] == "show_full_image" do %>
+        <div class="modal fade" id={assigns[:modal]}>
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content m-auto" style="width: 400px; height: 400px">
+                    <div class="modal-body">
+                        <img width="300px" height="300px" src={Routes.static_path(@socket,"/#{get_full_face(@student).path}")}>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% end %>
+    </div>
 </div>

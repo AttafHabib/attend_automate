@@ -2,27 +2,43 @@
 </div>
 <ul id="navbar" class="list-unstyled">
     <li class="nav-item">
-        <a href={Routes.dashboard_index_path(@socket, :index)} class="nav-link">Dashboard</a>
+        <%= live_redirect(to: Routes.dashboard_index_path(@socket, :index), class: "nav-link") do %>
+        Dashboard
+        <% end %>
     </li>
     <li class="nav-item">
-        <a href={Routes.attendance_index_path(@socket, :index)} class="nav-link">Attendance</a>
+        <%= live_redirect(to: Routes.attendance_index_path(@socket, :index), class: "nav-link") do %>
+        Attendance
+        <% end %>
     </li>
     <li class="nav-item">
-        <a href={Routes.course_index_path(@socket, :index)} class="nav-link">Courses</a>
+        <%= live_redirect(to: Routes.course_index_path(@socket, :index), class: "nav-link") do %>
+        Courses
+        <% end %>
     </li>
     <li class="nav-item">
-        <a href={Routes.teacher_index_path(@socket, :index)} class="nav-link">Teachers</a>
+        <%= live_redirect(to: Routes.teacher_index_path(@socket, :index), class: "nav-link") do %>
+        Teachers
+        <% end %>
     </li>
     <li class="nav-item">
-        <a href={Routes.student_index_path(@socket, :index)} class="nav-link">Students</a>
+        <%= live_redirect(to: Routes.student_index_path(@socket, :index), class: "nav-link") do %>
+        Students
+        <% end %>
     </li>
     <li class="nav-item">
-        <a href={Routes.user_index_path(@socket, :index)} class="nav-link">Users</a>
+        <%= live_redirect(to: Routes.user_index_path(@socket, :index), class: "nav-link") do %>
+        Users
+        <% end %>
     </li>
     <li class="nav-item">
-        <a href={Routes.department_index_path(@socket, :index)} class="nav-link">Departments</a>
+        <%= live_redirect(to: Routes.department_index_path(@socket, :index), class: "nav-link") do %>
+        Departments
+        <% end %>
     </li>
     <li class="nav-item">
-        <a href={Routes.session_path(@socket, :logout)} class="nav-link">Logout</a>
+        <%= live_redirect(to: Routes.session_path(@socket, :logout), class: "nav-link") do %>
+        Logout
+        <% end %>
     </li>
 </ul>

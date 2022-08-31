@@ -26,16 +26,18 @@
                 <thead>
                 <th>Code</th>
                 <th>CourseName</th>
-                <th>Teacher</th>
                 <th>Department</th>
+                <th>Teacher</th>
+                <th>TotalStudents</th>
                 </thead>
                 <tbody>
                 <%= for course <- @courses do %>
-                <tr>
+                <tr class="cursor_pointer" phx-click="show_course" phx-value-id={ course.id }>
                     <td><%= course.course_code %></td>
                     <td><%= course.name %></td>
-                    <td><%= %></td>
                     <td><%= course.department.name %></td>
+                    <td><%= %></td>
+                    <td><%= Enum.count course.students %></td>
                 </tr>
                 <% end %>
                 </tbody>

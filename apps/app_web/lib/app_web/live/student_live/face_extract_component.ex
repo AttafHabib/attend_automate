@@ -1,13 +1,13 @@
-defmodule AppWeb.StudentLive.FaceExtract do
-  use AppWeb, :live_view
+defmodule AppWeb.StudentLive.FaceExtractComponent do
+  use AppWeb, :live_component
   alias App.Context
   alias App.Context.{Students, CourseOffers, Files}
   alias App.Schema.{Student, File}
   alias AppWeb.Utils.ClientHelper
 
-  def mount(%{"id" => id, "action" => "extract"}, session, socket) do
+  def update(%{student_id: id}, socket) do
     student = Students.get_student!(id) |> IO.inspect()
-#              |> Context.preload_selective([:user, :face_images])
+                  |> Context.preload_selective([:user, :face_images])
 
     {
       :ok,
@@ -32,8 +32,8 @@ defmodule AppWeb.StudentLive.FaceExtract do
                         |> put_flash(:error, "Unrecognizable face! Please correct camera or lightning")
     end
 
-    if connected?(socket), do: Process.send_after(self(), "open_modals", 300)
-    if connected?(socket), do: Process.send_after(self(), "close_modals", 3000)
+    if connected?(socket), do: Process.send_after(self(), "open_modals_show_full_image", 300)
+    if connected?(socket), do: Process.send_after(self(), "close_modals_show_full_image", 3000)
 
 #    student = Students.get_student!(socket.assigns.student.id)
 #              |> Context.preload_selective([:user, :face_images])
@@ -45,31 +45,6 @@ defmodule AppWeb.StudentLive.FaceExtract do
       #      |> assign(student: student)
     }
   end
-
-  @impl true
-  def handle_info("open_modals", socket) do
-    {
-      :noreply,
-      push_event(
-        socket,
-        "open_modals",
-        %{"modal" => socket.assigns.modal}
-      )
-    }
-  end
-
-  @impl true
-  def handle_info("close_modals", socket) do
-    {
-      :noreply,
-      push_event(
-        socket,
-        "close_modals",
-        %{"modal" => socket.assigns.modal}
-      )
-    }
-  end
-
 
   def add_files(%{"f_image" => f_image, "full_image" => full_image, "user_id" => user_id}) do
     f_image &&

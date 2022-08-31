@@ -45,6 +45,7 @@ defmodule AppWeb.Router do
 
     live "/dashboard", DashboardLive.Index, :index
     live "/courses", CourseLive.Index, :index, container: {:section, class: "section_container"}
+    live "/courses/:id", CourseLive.Show, :show, container: {:section, class: "section_container"}
     live "/users", UserLive.Index, :index, container: {:section, class: "section_container"}
     live "/students", StudentLive.Index, :index, container: {:section, class: "section_container"}
     live "/students/:id", StudentLive.Show, :show, container: {:section, class: "section_container"}

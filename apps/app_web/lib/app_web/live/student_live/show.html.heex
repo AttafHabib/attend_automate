@@ -1,1 +1,57 @@
-<div><%= @student.first_name %></div>
+<div class="profile m-0">
+    <div class="profile_box row mb-5">
+        <img src="/uploads/2/1.png" class="profile_pic col-lg-2 col-md-3 col-sm-3 col-4 p-0">
+        <div class="col-lg-10 col-md-9 col-sm-9 col-8 my-auto">
+            <h1 class="prof_heading"><%= @student.first_name <> " " <> @student.last_name %></h1>
+            <div class="row m-0">
+                <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                    <ul class="prdate">
+                        <li>Roll No: <span><%= @student.roll_no %></span></li>
+                        <li>Email: <span><%= @student.email %></span></li>
+                        <li>Cnic: <span><%= @student.cnic %></span></li>
+                        <li>Address: <span><%= @student.address %></span></li>
+                        <li>Phone: <span><%= @student.phone_no %></span></li>
+                    </ul>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                    <ul class="prdate">
+                        <li>Department: <span><%= @student.department.name %></span></li>
+                        <li>Courses: <span><%= Enum.map(@student.courses, &(&1.name))|>Enum.join(", ") %></span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab_section">
+        <div class="tabsbox mb-4">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class={"nav-link #{(assigns[:tab_action] == "attendance") && "active"}"} phx-click="tab" phx-value-action="attendance" data-toggle="tab" href="#attendance">
+                        Attendance
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class={"nav-link #{(assigns[:tab_action] == "faces") && "active"}"} phx-click="tab" phx-value-action="faces" data-toggle="tab" href="#faces">
+                        Faces
+                    </a>
+                </li>
+            </ul>
+            <div class="tabscontent pt-5 bg">
+                <div class="tab-content">
+                    <%= if assigns[:tab_action] == "attendance" do %>
+                    <div class="tab-pane active" id="attendance">
+
+                    </div>
+                    <% end %>
+                    <%= if assigns[:tab_action]  == "faces" do %>
+                    <div class="tab-pane active" id="faces">
+                        <.live_component module={AppWeb.StudentLive.FaceExtractComponent} id="face_component" student_id={@student.id} modal={assigns[:modal]} />
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

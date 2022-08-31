@@ -37,7 +37,7 @@
                 </thead>
                 <tbody>
                 <%= for student <- @students do %>
-                <tr>
+                <tr class="cursor_pointer" phx-click="show_student" phx-value-id={ student.id }>
                     <td><%= String.capitalize(student.first_name) %></td>
                     <td><%= String.capitalize(student.last_name) %></td>
                     <td><%= student.roll_no %></td>
