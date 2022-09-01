@@ -101,4 +101,14 @@ defmodule App.Context.Courses do
   def change_course(%Course{} = course, attrs \\ %{}) do
     Course.changeset(course, attrs)
   end
+
+  def get_offered_courses(student_id, department_id) do
+    query_ = from(c in Course,
+      left_join: d in assoc(c, :department),
+      where: d.id == ^department_id,
+      left_join: std in assoc(c, :students),
+      where: is_nil(std.id)
+    )
+    Repo.all query_
+  end
 end

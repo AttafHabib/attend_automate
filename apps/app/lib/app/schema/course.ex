@@ -10,8 +10,10 @@ defmodule App.Schema.Course do
 
     belongs_to(:department, App.Schema.Department)
     has_one(:course_offer, App.Schema.CourseOffer)
+    has_many(:course_offers, App.Schema.CourseOffer)
 
     has_many(:students, through: [:course_offer, :student_courses, :student])
+    has_many(:teachers, through: [:course_offers, :teacher])
 
     timestamp()
   end

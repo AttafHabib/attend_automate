@@ -46,6 +46,21 @@ defmodule App.Context do
     |> Repo.all()
   end
 
+  def list_dropdown(models, keys) when is_list(keys) and is_list(models) do
+    models
+    |> Enum.map(
+         fn item_ ->
+           key_ = for k <- keys do
+             "#{Map.get(item_, k)}"
+           end
+           {Enum.join(key_, " "), item_.id}
+         end)
+  end
+
+  def list_dropdown(model, key) when is_nil(model) do
+    []
+  end
+
   def list_dropdown(model, keys) when is_list keys do
     (from model)
     |> Repo.all

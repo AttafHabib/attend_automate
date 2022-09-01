@@ -7,7 +7,12 @@ defmodule AppWeb.CourseLive.Index do
   alias App.Context
 
   def mount(params, session, socket) do
-    courses = Context.list(Course) |> Context.preload_selective([:department, :students])
+    courses = Context.list(Course)
+              |> Context.preload_selective([:department, :students, :teachers])
+
+    Enum.map(courses, fn course ->
+    Enum.join(Enum.map(course.teachers, &(&1.first_name <> " " <> &1.last_name)), ", ")|> IO.inspect()
+                                      end)
     user = Helpers.get_current_user(session["guardian_default_token"])
 
     {
@@ -48,7 +53,7 @@ defmodule AppWeb.CourseLive.Index do
       {:ok, dpt} ->
         if connected?(socket), do: Process.send_after(self(), "close_modals", 300)
 
-        courses = Context.list(Course) |> Context.preload_selective([:department])
+        courses = Context.list(Course) |> Context.preload_selective([:department, :students, :teachers])
         {
           :noreply,
           socket

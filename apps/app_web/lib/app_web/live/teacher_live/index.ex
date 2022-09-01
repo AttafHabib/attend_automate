@@ -68,7 +68,7 @@ defmodule AppWeb.TeacherLive.Index do
                         teachers = Context.list(Teacher)
                                    |> Context.preload_selective([:department, :courses])
 
-                        {:ok,
+                        {:noreply,
                           socket
                           |> assign(:teachers, teachers)
                         }

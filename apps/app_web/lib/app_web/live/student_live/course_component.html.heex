@@ -1,0 +1,39 @@
+<div class="prof_nav m-0 row">
+    <div class="section bg bg-white">
+        <div class="row border-bottom m-0 pt-1 pb-1">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                <p class="mt-1"><strong>Total Courses: <%= Enum.count(@student.courses) %></strong></p>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-6 d-flex justify-content-end m-auto">
+                <button class="btn sbtn" style="width: unset" phx-click="open_modals" phx-value-modal="add_course" phx-target={@myself}>
+                    <i class="fa fa-plus pr-3"></i>
+                    Add Course
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="popups" phx-hook="modals" id="modals-div-12">
+        <%= if assigns[:modal] == "add_course" do %>
+        <div class="modal fade" id={assigns[:modal]}>
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content m-auto">
+                    <div class="modal-body">
+                        <span class="close" phx-click="close_modals" phx-target={@myself} data-dismiss="modal">&times;</span>
+                        <h4 class="text-center" style="color: #812E23">Select Course</h4>
+                        <.form let={f} for={:foo} phx-submit="save" phx-target={@myself}>
+                        <div class="form-group">
+                            <%= label f, :course_name %>
+                            <%= select f, :student_courses, @course_dropdown , name: "course[course_id]", class: "form-control", prompt: "Select Department", required: true %>
+                        </div>
+                        <div class="form-group d-flex justify-content-center">
+                            <button class="dbtn btn mr-4" phx-click="close_modals" phx-target={@myself} data-dismiss="modal"><%= gettext("Cancel") %></button>
+                            <button class="dbtn btn" type="submit"><%= gettext("Submit") %></button>
+                        </div>
+                        </.form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% end %>
+    </div>
+</div>

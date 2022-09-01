@@ -35,19 +35,24 @@
                         Faces
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class={"nav-link #{(assigns[:tab_action] == "courses") && "active"}"} phx-click="tab" phx-value-action="courses" data-toggle="tab" href="#courses">
+                    Courses
+                    </a>
+                </li>
             </ul>
             <div class="tabscontent pt-5 bg">
                 <div class="tab-content">
+                    <div class="tab-pane active" id={assigns[:tab_action]}>
                     <%= if assigns[:tab_action] == "attendance" do %>
-                    <div class="tab-pane active" id="attendance">
-
-                    </div>
                     <% end %>
                     <%= if assigns[:tab_action]  == "faces" do %>
-                    <div class="tab-pane active" id="faces">
                         <.live_component module={AppWeb.StudentLive.FaceExtractComponent} id="face_component" student_id={@student.id} modal={assigns[:modal]} />
-                    </div>
                     <% end %>
+                    <%= if assigns[:tab_action]  == "courses" do %>
+                        <.live_component module={AppWeb.StudentLive.CourseComponent} id="course_component" student_id={@student.id} modal={assigns[:modal]} />
+                    <% end %>
+                    </div>
                 </div>
             </div>
 
