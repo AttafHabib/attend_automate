@@ -6,7 +6,7 @@ defmodule App.Context.Courses do
   import Ecto.Query, warn: false
   alias App.Repo
 
-  alias App.Schema.Course
+  alias App.Schema.{Course, CourseOffer}
 
   @doc """
   Returns the list of courses.
@@ -108,6 +108,22 @@ defmodule App.Context.Courses do
       where: d.id == ^department_id,
       left_join: std in assoc(c, :students),
       where: is_nil(std.id)
+    )
+    Repo.all query_
+  end
+
+  def get_course_offers(student_id, department_id) do
+    query_ = from(co in CourseOffer,
+      left_join: c in assoc(co, :course),
+      left_join: d in assoc(c, :department),
+      where: d.id == ^department_id,
+      left_join: std in assoc(co, :student_courses),
+      where: is_nil(std.id),
+      left_join: t in assoc(co, :teacher),
+      select: %{
+        id: co.id,
+        name: fragment("concat(?, '(', ?, ')', '-', ?, ' ', ?)", c.name, c.course_code, t.first_name, t.last_name),
+      }
     )
     Repo.all query_
   end

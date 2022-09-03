@@ -26,11 +26,20 @@ defmodule AppWeb.StudentLive.Show do
   end
 
   @impl true
+  def handle_event("show_course", %{"id" => id}, socket) do
+    {:noreply,
+      socket
+      |> push_redirect(to: Routes.course_show_path(socket, :show, id))
+    }
+  end
+
+  @impl true
   def handle_info("open_modals_" <> modal, socket) do
     {
       :noreply,
-      push_event(
-        socket,
+      socket
+      |> assign(:modal, "show_full_image")
+      |> push_event(
         "open_modals",
         %{"modal" => modal}
       )
@@ -41,8 +50,9 @@ defmodule AppWeb.StudentLive.Show do
   def handle_info("close_modals_" <> modal, socket) do
     {
       :noreply,
-      push_event(
-        socket,
+    socket
+    |> assign(:modal,false)
+    |> push_event(
         "close_modals",
         %{"modal" => modal}
       )

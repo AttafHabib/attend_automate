@@ -27,7 +27,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content m-auto" style="width: 400px; height: 400px">
                     <div class="modal-body">
-                        <img width="300px" height="300px" src={Routes.static_path(@socket,"/#{get_full_face(@student).path}")}>
+                        <img width="300px" height="300px" src={Routes.static_path(@socket,"/#{get_full_face(@student).path}?v=#{@img_id}")}>
                     </div>
                 </div>
             </div>
