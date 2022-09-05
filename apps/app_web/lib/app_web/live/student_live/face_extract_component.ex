@@ -6,8 +6,6 @@ defmodule AppWeb.StudentLive.FaceExtractComponent do
   alias AppWeb.Utils.ClientHelper
 
   def update(%{student_id: id}, socket) do
-    IO.inspect("=============In update=============")
-    IO.inspect("=============In update=============")
     student = Students.get_student!(id) |> IO.inspect()
                   |> Context.preload_selective([:user, :face_images])
 

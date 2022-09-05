@@ -7,7 +7,7 @@ defmodule AppWeb.StudentLive.CourseComponent do
 
   def update(%{student_id: id}, socket) do
     student = Students.get_student!(id)
-              |> Context.preload_selective([:user, :face_images, courses: :department])
+              |> Context.preload_selective([:user, :face_images, :department, [s_courses: [:attendances, course_offer: :course]]])
 
     {
       :ok,
@@ -17,15 +17,12 @@ defmodule AppWeb.StudentLive.CourseComponent do
   end
 
   @impl true
-  def handle_event("save", %{"course_offer" => %{"course_offer_id" => id} = params}, socket) do
+  def handle_event("save", %{"course_offer" => %{"course_offer_id" => _id} = params}, socket) do
     params = Map.put(params, "student_id", socket.assigns.student.id)
-    IO.inspect("=============params=============")
-    IO.inspect(params)
-    IO.inspect("=============params=============")
 
     case Context.create(StudentCourse, params) do
-      {:ok, course} -> student = Students.get_student!(id)
-                                 |> Context.preload_selective([:user, :face_images, courses: :department])
+      {:ok, course} -> student = Students.get_student!(socket.assigns.student.id)
+                                 |> Context.preload_selective([:user, :face_images, :department, [s_courses: [:attendances, course_offer: :course]]])
 
                        if connected?(socket), do: Process.send_after(self(), "close_modals_" <> socket.assigns.modal, 300)
                        {
@@ -66,5 +63,14 @@ defmodule AppWeb.StudentLive.CourseComponent do
       :noreply,
       socket
     }
+  end
+
+  def get_attendance(s_course) do
+    freq = Enum.frequencies_by(s_course.attendances, &(&1.status))
+    p = freq[:true] || 0
+    a = freq[:false] || 0
+    total = p + a
+    perc = (total != 0) && (p/total) or 0
+    {p, total, perc}
   end
 end

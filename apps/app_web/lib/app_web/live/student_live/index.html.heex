@@ -42,7 +42,7 @@
                     <td><%= String.capitalize(student.last_name) %></td>
                     <td><%= student.roll_no %></td>
                     <td><%= student.department.name %></td>
-                    <td><%= Enum.map(student.courses, &(&1.name))|> Enum.join(", ") %></td>
+                    <td><%= Enum.map(student.s_courses, &(&1.course_offer.course.name))|> Enum.join(", ") %></td>
                 </tr>
                 <% end %>
                 </tbody>

@@ -7,7 +7,7 @@ defmodule AppWeb.StudentLive.Show do
   alias App.Schema.{Student}
 
   def mount(%{"id" => id}, session, socket) do
-    student = Students.get_student!(id) |> Context.preload_selective([:department, :courses])
+    student = Students.get_student!(id) |> Context.preload_selective([:department, s_courses: [course_offer: :course]])
 
     {
       :ok,

@@ -2,7 +2,7 @@
     <div class="section bg bg-white">
         <div class="row border-bottom m-0 pt-1 pb-1">
             <div class="col-lg-6 col-md-6 col-sm-6 col-6">
-                <p class="mt-1"><strong>Total Courses: <%= Enum.count(@student.courses) %></strong></p>
+                <p class="mt-1"><strong>Total Courses: <%= Enum.count(@student.s_courses) %></strong></p>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-6 d-flex justify-content-end m-auto">
                 <button class="btn sbtn" style="width: unset" phx-click="open_modals" phx-value-modal="add_course" phx-target={@myself}>
@@ -16,14 +16,18 @@
                         <thead>
                         <th>Code</th>
                         <th>CourseName</th>
+                        <th>Attendance </th>
                         <th>Attendance %</th>
                         </thead>
                         <tbody>
-                        <%= for course <- @student.courses do %>
+                        <%= for s_course <- @student.s_courses do %>
+                        <% course = s_course.course_offer.course %>
                         <tr class="cursor_pointer" phx-click="show_course" phx-value-id={ course.id }>
                             <td><%= course.course_code %></td>
                             <td><%= course.name %></td>
-                            <td><%= "-" %></td>
+                            <% {p, total, perc} = get_attendance(s_course) %>
+                            <td><%= "#{p} / #{total}" %></td>
+                            <td><%= perc %>&nbsp;%</td>
                         </tr>
                         <% end %>
                         </tbody>

@@ -16,7 +16,7 @@
                 <div class="col-lg-6 col-md-6 col-sm-6 col-12">
                     <ul class="prdate">
                         <li>Department: <span><%= @student.department.name %></span></li>
-                        <li>Courses: <span><%= Enum.map(@student.courses, &(&1.name))|>Enum.join(", ") %></span></li>
+                        <li>Courses: <span><%= Enum.map(@student.s_courses, &(&1.course_offer.course.name))|>Enum.join(", ") %></span></li>
                     </ul>
                 </div>
             </div>

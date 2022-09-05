@@ -6,6 +6,7 @@ defmodule App.Schema.StudentCourse do
     belongs_to :student, App.Schema.Student
     belongs_to :course_offer, App.Schema.CourseOffer
 
+    has_many :attendances, App.Schema.Attendance
     timestamp()
   end
 

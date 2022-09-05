@@ -6,7 +6,7 @@ defmodule AppWeb.StudentLive.Index do
 
   def mount(params, session, socket) do
     students = Students.list_students
-               |> Context.preload_selective([:department, :courses])
+               |> Context.preload_selective([:department, [s_courses: [course_offer: :course]]])
 
     {:ok,
       socket

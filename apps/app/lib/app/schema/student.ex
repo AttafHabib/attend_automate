@@ -31,8 +31,8 @@ defmodule App.Schema.Student do
 
     belongs_to(:department, App.Schema.Department)
 
-    has_many(:student_courses, App.Schema.StudentCourse)
-    has_many(:courses, through: [:student_courses, :course_offer, :course])
+    has_many(:s_courses, App.Schema.StudentCourse)
+#    has_many(:courses, through: [:student_courses, :course_offer, :course])
     has_many(:face_images, through: [:user,  :files])
     has_one(:full_image, through: [:user,  :files])
 
