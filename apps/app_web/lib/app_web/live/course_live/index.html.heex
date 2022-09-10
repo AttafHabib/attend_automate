@@ -11,10 +11,12 @@
         </.form>
     </div>
     <a href="#" phx-click="filter_btn" phx-value-btn="course" class="btn sbtn"><i class="fa fa-filter"></i></a>
+    <%= if @user.user_role.role_id in [1] do %>
     <button class="btn sbtn" style="width: unset" phx-click="open_modals" phx-value-modal="add_course">
         <i class="fa fa-plus pr-3"></i>
         Course
     </button>
+    <% end %>
 </div>
 </div>
 </div>

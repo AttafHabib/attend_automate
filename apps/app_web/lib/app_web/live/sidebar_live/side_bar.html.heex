@@ -16,26 +16,34 @@
         Courses
         <% end %>
     </li>
+    <%= if @user.user_role.role_id in [1] do %>
     <li class="nav-item">
         <%= live_redirect(to: Routes.teacher_index_path(@socket, :index), class: "nav-link") do %>
         Teachers
         <% end %>
     </li>
+    <% end %>
+    <%= if @user.user_role.role_id in [1] do %>
     <li class="nav-item">
         <%= live_redirect(to: Routes.student_index_path(@socket, :index), class: "nav-link") do %>
         Students
         <% end %>
     </li>
+    <% end %>
+    <%= if @user.user_role.role_id in [1] do %>
     <li class="nav-item">
         <%= live_redirect(to: Routes.user_index_path(@socket, :index), class: "nav-link") do %>
         Users
         <% end %>
     </li>
+    <% end %>
+    <%= if @user.user_role.role_id in [1] do %>
     <li class="nav-item">
         <%= live_redirect(to: Routes.department_index_path(@socket, :index), class: "nav-link") do %>
         Departments
         <% end %>
     </li>
+    <% end %>
     <li class="nav-item">
         <%= live_redirect(to: Routes.session_path(@socket, :logout), class: "nav-link") do %>
         Logout

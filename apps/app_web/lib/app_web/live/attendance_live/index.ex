@@ -4,15 +4,44 @@ defmodule AppWeb.AttendanceLive.Index do
 
   alias App.Helpers
   alias App.Context
+  alias App.Context.{Users, Students}
 
   def mount(params, session, socket) do
-    user = Helpers.get_current_user(session["guardian_default_token"])
+    case Users.verify_user(session["guardian_default_token"]) do
+      {:ok, user} ->
 
-    {
-      :ok,
+        {:ok,
+          socket
+          |> assign(user: user)
+          |> assign(tab_action: "report")
+          |> load_role()
+        }
+
+      {:error, reason} ->
+        {:ok, push_redirect(socket, to: "/login")}
+    end
+  end
+
+  def load_role(socket) do
+    user = socket.assigns.user
+    case user.user_role.role_id do
+      1 -> socket
+      2 ->
+          student = Students.get_by_user_id(user.id)
+                    |> Context.preload_selective([:department, s_courses: [course_offer: :course]])
+          socket
+          |> assign(student: student)
+      2 -> socket
+      3 -> socket
+      4 -> socket
+    end
+  end
+
+  @impl true
+  def handle_event("tab", %{"action" => action}, socket) do
+    {:noreply,
       socket
-      |> assign(:user, user)
-      |> assign(:action, nil)
+      |> assign(tab_action: action)
     }
   end
 

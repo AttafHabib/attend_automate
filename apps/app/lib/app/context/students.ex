@@ -122,4 +122,8 @@ defmodule App.Context.Students do
 #    |> Student.changeset_s_course(params)
 #    |> Repo.update
 #  end
+
+  def get_by_user_id(user_id) do
+    from(s in Student, where: s.user_id == ^user_id)|> Repo.one
+  end
 end

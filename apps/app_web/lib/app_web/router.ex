@@ -43,7 +43,7 @@ defmodule AppWeb.Router do
   scope "/", AppWeb do
     pipe_through [:browser, :auth, :ensure_auth]
 
-    live "/dashboard", DashboardLive.Index, :index
+    live "/dashboard", DashboardLive.Index, :index, container: {:section, class: "section_container"}
     live "/courses", CourseLive.Index, :index, container: {:section, class: "section_container"}
     live "/courses/:id", CourseLive.Show, :show, container: {:section, class: "section_container"}
     live "/users", UserLive.Index, :index, container: {:section, class: "section_container"}
@@ -56,6 +56,11 @@ defmodule AppWeb.Router do
     live "/attendance", AttendanceLive.Index, :index, container: {:section, class: "section_container"}
 
     get "/logout", SessionController, :logout
+  end
+
+  scope "/", AppWeb do
+    pipe_through [:browser, :auth, :ensure_auth]
+    live "/*path", DashboardLive.Index, container: {:section, class: "section_container"}
   end
 
   # Other scopes may use custom stacks.

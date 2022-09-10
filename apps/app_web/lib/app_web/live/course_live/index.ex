@@ -2,25 +2,31 @@ defmodule AppWeb.CourseLive.Index do
   use AppWeb, :live_view
   import AppWeb.Components.BreadCrumb
 
-  alias App.Helpers
   alias App.Schema.{Course, Department}
   alias App.Context
+  alias App.Context.Users
 
   def mount(params, session, socket) do
-    courses = Context.list(Course)
-              |> Context.preload_selective([:department, :students, :teachers])
+    case Users.verify_user(session["guardian_default_token"]) do
+      {:ok, user} ->
+        courses = Context.list(Course)
+                  |> Context.preload_selective([:department, :students, :teachers])
 
-    Enum.map(courses, fn course ->
-    Enum.join(Enum.map(course.teachers, &(&1.first_name <> " " <> &1.last_name)), ", ")|> IO.inspect()
-                                      end)
-    user = Helpers.get_current_user(session["guardian_default_token"])
+        Enum.map(courses, fn course ->
+          Enum.join(Enum.map(course.teachers, &(&1.first_name <> " " <> &1.last_name)), ", ")|> IO.inspect()
+        end)
 
-    {
-      :ok,
-      socket
-      |> assign(:courses, courses)
-      |> assign(:user, user)
-    }
+        {
+          :ok,
+          socket
+          |> assign(courses: courses)
+          |> assign(user: user)
+
+        }
+
+      {:error, reason} ->
+        {:ok, push_redirect(socket, to: "/login")}
+    end
   end
 
   @impl true

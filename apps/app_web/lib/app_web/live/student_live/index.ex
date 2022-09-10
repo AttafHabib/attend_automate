@@ -1,17 +1,25 @@
 defmodule AppWeb.StudentLive.Index do
   use AppWeb, :live_view
   alias App.Context
-  alias App.Context.{Students, CourseOffers}
+  alias App.Context.{Students, CourseOffers, Users}
   alias App.Schema.{Student, Department}
 
   def mount(params, session, socket) do
-    students = Students.list_students
-               |> Context.preload_selective([:department, [s_courses: [course_offer: :course]]])
+    case Users.verify_user(session["guardian_default_token"]) do
+      {:ok, user} -> case user.user_role.role_id in [1] do
+                       true -> students = Students.list_students
+                                                   |> Context.preload_selective([:department, [s_courses: [course_offer: :course]]])
+                                        {:ok,
+                                          socket
+                                          |> assign(user: user)
+                                          |> assign(students: students)
+                                        }
+                       _ -> {:ok, push_redirect(socket, to: "/dashboard")}
+                     end
 
-    {:ok,
-      socket
-      |> assign(:students, students)
-    }
+      {:error, reason} ->
+        {:ok, push_redirect(socket, to: "/login")}
+    end
   end
 
   @impl true

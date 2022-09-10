@@ -130,7 +130,8 @@ defmodule App.Context.Users do
 
   def verify_user(token) do
     case Guardian.decode_and_verify(token) do
-      {:ok, claims} -> Guardian.resource_from_claims(claims)
+      {:ok, claims} -> {:ok, user} = Guardian.resource_from_claims(claims)
+                       {:ok, Repo.preload(user, :user_role)}
       {:error, reason} -> {:error, reason}
     end
   end
