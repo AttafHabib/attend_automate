@@ -101,4 +101,8 @@ defmodule App.Context.Attendances do
   def change_attendance(%Attendance{} = attendance, attrs \\ %{}) do
     Attendance.changeset(attendance, attrs)
   end
+
+  def get_by_s_course(s_course_id) do
+    from(at in Attendance, where: at.student_course_id == ^s_course_id) |> Repo.all
+  end
 end

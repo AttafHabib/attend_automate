@@ -3,7 +3,7 @@ defmodule App.Schema.Attendance do
   import Ecto.Changeset
 
   schema "attendances" do
-    field :date, :string
+    field :date, :date
     field :status, :boolean, default: false
 
 
@@ -15,7 +15,7 @@ defmodule App.Schema.Attendance do
   @doc false
   def changeset(attendance, attrs) do
     attendance
-    |> cast(attrs, [:status, :date])
-    |> validate_required([:status, :date])
+    |> cast(attrs, [:status, :date, :student_course_id])
+    |> validate_required([:status, :date, :student_course_id])
   end
 end

@@ -51,7 +51,10 @@ defmodule AppWeb.MixProject do
       {:app, in_umbrella: true},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:httpoison, "~> 1.8.0"}
+      {:httpoison, "~> 1.8.0"},
+      {:contex, "~> 0.4.0"}
+#      {:poison, "~> 3.0"},
+#      {:chartkick, "~> 0.4.0"}
     ]
   end
 

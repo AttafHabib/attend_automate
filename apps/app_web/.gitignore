@@ -32,3 +32,4 @@ app_web-*.tar
 npm-debug.log
 /assets/node_modules/
 
+/priv/uploads/

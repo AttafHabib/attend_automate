@@ -4,7 +4,7 @@ defmodule AppWeb.AttendanceLive.Index do
 
   alias App.Helpers
   alias App.Context
-  alias App.Context.{Users, Students}
+  alias App.Context.{Users, Students, Attendances}
 
   def mount(params, session, socket) do
     case Users.verify_user(session["guardian_default_token"]) do
@@ -13,7 +13,7 @@ defmodule AppWeb.AttendanceLive.Index do
         {:ok,
           socket
           |> assign(user: user)
-          |> assign(tab_action: "report")
+#          |> assign(tab_action: "report")
           |> load_role()
         }
 
@@ -38,19 +38,39 @@ defmodule AppWeb.AttendanceLive.Index do
   end
 
   @impl true
-  def handle_event("tab", %{"action" => action}, socket) do
+  def handle_event("tab", %{"action" => action, "id" => id}, socket) do
+    attendances = Attendances.get_by_s_course(id)
+    enc_attend = Enum.frequencies_by(attendances, &(&1.status && "Present" || "Absent"))
+                 |> Enum.into []
+    IO.inspect("=============enc_attend=============")
+    IO.inspect(enc_attend)
+    IO.inspect("=============enc_attend=============")
+
+    
     {:noreply,
       socket
       |> assign(tab_action: action)
+      |> assign(enc_attend: enc_attend)
+      |> assign(dataset: draw_pichart(enc_attend))
     }
+  end
+
+  def draw_pichart(dataset) do
+    dataset
+    |> Contex.Dataset.new(["Type", "Value"])
+    |> Contex.PieChart.new([
+      mapping: %{category_col: "Type", value_col: "Value"},
+      data_labels: true
+    ])
+    |> Contex.PieChart.to_svg()
   end
 
   @impl true
   def handle_event("get_face", _, socket) do
-    port = Port.open(
-      {:spawn, "python3 main.py"},
-      [:binary, :nouse_stdio, {:packet, 4}]
-    )
+#    port = Port.open(
+#      {:spawn, "python3 main.py"},
+#      [:binary, :nouse_stdio, {:packet, 4}]
+#    )
 
     {
       :noreply,

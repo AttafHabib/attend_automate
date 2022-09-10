@@ -1,35 +1,49 @@
-<div class="prof_nav m-0 row">
-    <div class="col-lg-10 col-md-10 col-sm-10 col-10">
-        <h2 class="text-left">Attendance</h2>
-    </div>
-    <div class="col-lg-2 col-md-2 col-sm-2 col-2 d-flex justify-content-end">
+<div class="m-0 w-100 h-100 row flex-column">
+    <div class="row m-0">
         <%= if @user.user_role.role_id in [1, 3] do %>
-        <button class="btn sbtn" style="width: unset" phx-click="get_face">
-            <i class="fa fa-plus pr-3"></i>
-            Save Face
-        </button>
+        <div class="col-lg-10 col-md-10 col-sm-10 col-10">
+            <h2 class="text-left">Attendance</h2>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-2 d-flex justify-content-end">
+            <button class="btn sbtn" style="width: unset" phx-click="get_face">
+                <i class="fa fa-plus pr-3"></i>
+                Save Face
+            </button>
+        </div>
+        <% else %>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+            <h2 class="text-left">Attendance</h2>
+        </div>
         <% end %>
     </div>
+    <div class="row m-0">
     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-        <div class="tab_section">
-            <div class="tabsbox mb-4">
-                <ul class="nav nav-tabs">
-                    <%= if @user.user_role.role_id == 2 do %>
-                    <%= for s_course <- @student.s_courses do %>
-                    <li class="nav-item">
-                        <a class={"nav-link #{(assigns[:tab_action] == s_course.course_offer.course.name) && "active"}"} phx-click="tab" phx-value-action={s_course.course_offer.course.name} data-toggle="tab" href={"#{s_course.course_offer.course.name}"}>
-                        <%= s_course.course_offer.course.name %>
-                        </a>
-                    </li>
+            <div class="tab_section">
+                <div class="tabsbox mb-4">
+                    <ul class="nav nav-tabs">
+                        <%= if @user.user_role.role_id == 2 do %>
+                        <%= for s_course <- @student.s_courses do %>
+                        <li class="nav-item">
+                            <a class={"nav-link #{(assigns[:tab_action] == s_course.course_offer.course.name) && "active"}"} phx-click="tab" phx-value-action={s_course.course_offer.course.name} phx-value-id={s_course.id} data-toggle="tab" href={"#{s_course.course_offer.course.name}"}>
+                            <%= s_course.course_offer.course.name %>
+                            </a>
+                        </li>
+                        <% end %>
                     <% end %>
-                    <% end %>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-12 col-md-12 col-sm-12 col-12 bg-white">
-        <div>
-
+    <div class="row m-0">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="bg-white">
+                <%= if assigns[:enc_attend] do %>
+                <svg style="height: 410px; width: 410px">
+                    <%= raw @dataset %>
+                </svg>
+                <% end %>
+            </div>
         </div>
     </div>
 </div>
