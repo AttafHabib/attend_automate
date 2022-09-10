@@ -19,10 +19,13 @@ defmodule AppWeb.StudentLive.FaceExtractComponent do
 
   @impl true
   def handle_event("get_face", params, socket) do
-    user_id = socket.assigns.student.user.id
-    case ClientHelper.get_user_face(user_id) do
-      {:ok, params} -> params |> Map.put("user_id", user_id) |> add_files
-                       student = Students.get_student!(socket.assigns.student.id)
+    student = socket.assigns.student
+    user_id = student.user.id
+    case ClientHelper.get_user_face(user_id, String.downcase(student.first_name)) do
+      {:ok, params} -> IO.inspect(params, label: :params)
+
+        params |> Map.put("user_id", user_id) |> add_files
+                       student = Students.get_student!(student.id)
 
                        if connected?(socket), do: Process.send_after(self(), "open_modals_show_full_image", 300)
                        if connected?(socket), do: Process.send_after(self(), "close_modals_show_full_image", 10000)
@@ -36,7 +39,6 @@ defmodule AppWeb.StudentLive.FaceExtractComponent do
                        }
 
       {:error, data} -> params |> Map.put("user_id", user_id) |> add_files
-
                         if connected?(socket), do: Process.send_after(self(), "open_modals_show_full_image", 300)
                         if connected?(socket), do: Process.send_after(self(), "close_modals_show_full_image", 10000)
 
@@ -55,9 +57,9 @@ defmodule AppWeb.StudentLive.FaceExtractComponent do
       Context.create(File, %{path: "uploads/#{user_id}/#{f_image}", tag: "face_image", user_id: user_id})
 
     # Full image is already replaced by latest by python module, so no need to update reference
-    Files.get_by_tag!("full_image", user_id)|>IO.inspect
+    Files.get_by_tag!("full_image", user_id)
     ||
-      Context.create(File, %{path: "uploads/#{user_id}/#{full_image}", tag: "full_image", user_id: user_id})
+      Context.create(File, %{path: "uploads/#{full_image}", tag: "full_image", user_id: user_id})
   end
 
   def add_files(params) do

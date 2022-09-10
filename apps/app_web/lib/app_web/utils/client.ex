@@ -2,8 +2,8 @@ defmodule AppWeb.Utils.Client do
   use HTTPoison.Base
 
 
-  def get_user_face(user_id) do
-    url = "user/#{user_id}/extract"
+  def get_user_face(user_id, username) do
+    url = "user/#{user_id}/#{username}/extract"
 
     request_url(:get, url)
   end

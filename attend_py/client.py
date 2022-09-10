@@ -7,12 +7,12 @@ from io_helper import save_image, save_rect_image
 
 app = Flask(__name__)
 
-@app.route("/user/<id>/extract")
-def get_user_face(id):
+@app.route("/user/<id>/<user_name>/extract")
+def get_user_face(id, user_name):
     f_images = get_single_face()
 
     if f_images[0]:
-        f_image = save_image(f_images[1], id)
+        f_image = save_image(f_images[1], id, user_name)
         rect_image = save_rect_image(f_images[2], id)
         data = {"data": {"f_image": f_image, "full_image": rect_image}, "message": "Image Extracted"}
 
