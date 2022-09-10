@@ -116,10 +116,10 @@ defmodule App.Context.Students do
     Student.changeset(student, _attrs)
   end
 
-  def add_s_courses(%Student{} = student, params) do
-    student
-    |> Repo.preload([:student_courses])
-    |> Student.changeset_s_course(params)
-    |> Repo.update
-  end
+#  def add_s_courses(%Student{} = student, params) do
+#    student
+#    |> Repo.preload([:student_courses])
+#    |> Student.changeset_s_course(params)
+#    |> Repo.update
+#  end
 end

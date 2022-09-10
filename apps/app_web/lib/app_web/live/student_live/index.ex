@@ -27,7 +27,7 @@ defmodule AppWeb.StudentLive.Index do
   def handle_event("open_modals", %{"modal" => modal}, socket) do
     if connected?(socket), do: Process.send_after(self(), "open_modals", 300)
 
-    student = %Student{} |> Context.preload_selective([:student_courses])
+    student = %Student{}
 
     changeset_student = Context.change(Student, student)
     dpt_dropdown = Context.list_dropdown(Department, :name)
@@ -72,23 +72,31 @@ defmodule AppWeb.StudentLive.Index do
     IO.inspect("=============params=============")
 
     l_student = Context.get_last(Student)
-    roll_no = l_student && (l_student.id ++ 1) || 1
+    roll_no = l_student && (String.to_integer(l_student.roll_no) + 1) || 1
 
     params = Map.put(params, "roll_no", "#{roll_no}")
 
     case Context.create(Student, params) do
-      {:ok, student} -> params_ = params["student_courses"]
-                                  |> Enum.map(&(%{"course_offer_id" => &1, "student_id" => student.id}))
+      {:ok, student} ->
+#        params_ = params["student_courses"]
+#                                  |> Enum.map(&(%{"course_offer_id" => &1, "student_id" => student.id}))
 
-                        params = Map.put(params, "student_courses", params_)
-                        Students.add_s_courses(student, params)
+#                        params = Map.put(params, "student_courses", params_)
+                        for co_id <- params["student_courses"] do
+                          case Context.create(App.Schema.StudentCourse, %{student_id: "#{student.id}", course_offer_id: co_id}) do
+                            {:ok, _} -> ""
+                            {:error, changeset} -> IO.inspect("=============error=============")
+                                                   IO.inspect(changeset)
+                                                   IO.inspect("=============error=============")
+                          end
+                        end
 
                         if connected?(socket), do: Process.send_after(self(), "close_modals", 300)
 
                         students = Students.list_students
-                                   |> Context.preload_selective()
+                                   |> Context.preload_selective([:department, [s_courses: [course_offer: :course]]])
 
-                        {:ok,
+                        {:noreply,
                           socket
                           |> assign(:students, students)
                         }
