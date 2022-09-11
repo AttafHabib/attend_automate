@@ -143,4 +143,22 @@ defmodule App.Context.Courses do
       }
     ) |> Repo.all
   end
+
+  def get_by_teacher_id(teacher_id) do
+    from(c in Course,
+      left_join: co in assoc(c, :course_offers),
+      left_join: t in assoc(co, :teacher),
+      left_join: dep in assoc(t, :department),
+      where: co.teacher_id == ^teacher_id,
+      select: %{
+        id: c.id,
+        course_offer_id: co.id,
+        course_code: c.course_code,
+        name: c.name,
+        department: %{
+          name: dep.name
+        }
+      }
+    ) |> Repo.all
+  end
 end

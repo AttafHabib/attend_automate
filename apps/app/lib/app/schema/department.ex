@@ -9,6 +9,7 @@ defmodule App.Schema.Department do
     timestamp()
 
     has_many(:students, App.Schema.Student)
+    has_many(:courses, App.Schema.Course)
   end
 
   @doc false

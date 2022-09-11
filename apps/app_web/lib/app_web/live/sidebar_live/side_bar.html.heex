@@ -7,8 +7,10 @@
         <% end %>
     </li>
     <li class="nav-item">
+        <%= if @user.user_role.role_id in [2, 3] do %>
         <%= live_redirect(to: Routes.attendance_index_path(@socket, :index), class: "nav-link") do %>
         Attendance
+        <% end %>
         <% end %>
     </li>
     <li class="nav-item">

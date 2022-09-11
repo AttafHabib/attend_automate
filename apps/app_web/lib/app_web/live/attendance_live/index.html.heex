@@ -1,30 +1,27 @@
 <div class="prof_cont">
     <div class="row">
-        <%= if @user.user_role.role_id in [1, 3] do %>
-        <div class="col-lg-10 col-md-10 col-sm-10 col-10 col_container">
-            <h2 class="text-left">Attendance</h2>
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-2 d-flex justify-content-end col_container">
-            <button class="btn sbtn" style="width: unset" phx-click="get_face">
-                <i class="fa fa-plus pr-3"></i>
-                Save Face
-            </button>
-        </div>
-        <% else %>
         <div class="col-lg-12 col-md-12 col-sm-12 col-12 col_container">
             <h2 class="text-left">Attendance</h2>
         </div>
-        <% end %>
     </div>
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-12 col_container">
             <div class="tab_section">
                 <div class="tabsbox mb-4">
                     <ul class="nav nav-tabs">
+                        <%= if @user.user_role.role_id == 3 do %>
+                        <%= for t_course <- @teacher.course_offers do %>
+                        <li class="nav-item">
+                            <a class={"nav-link #{(assigns[:tab_action] == t_course.course.name) && "active"}"} phx-click="tab" phx-value-type="teacher" phx-value-action={t_course.course.name} phx-value-id={t_course.id} data-toggle="tab" href={"#{t_course.course.name}"}>
+                            <%= t_course.course.name %>
+                            </a>
+                        </li>
+                        <% end %>
+                        <% end %>
                         <%= if @user.user_role.role_id == 2 do %>
                         <%= for s_course <- @student.s_courses do %>
                         <li class="nav-item">
-                            <a class={"nav-link #{(assigns[:tab_action] == s_course.course_offer.course.name) && "active"}"} phx-click="tab" phx-value-action={s_course.course_offer.course.name} phx-value-id={s_course.id} data-toggle="tab" href={"#{s_course.course_offer.course.name}"}>
+                            <a class={"nav-link #{(assigns[:tab_action] == s_course.course_offer.course.name) && "active"}"} phx-click="tab" phx-value-type="student" phx-value-action={s_course.course_offer.course.name} phx-value-id={s_course.id} data-toggle="tab" href={"#{s_course.course_offer.course.name}"}>
                             <%= s_course.course_offer.course.name %>
                             </a>
                         </li>
@@ -37,15 +34,25 @@
     </div>
     <div class="row w-100 bg-white"  style="padding: 15px">
         <%= if assigns[:attendance_data] do %>
-            <div class="w-100">
-                <div class="col-lg-3 col-md-3 col-sm-4 col-5 col_container mb-4">
-                    <.form let={f} for={:foo} phx-change="filter_attend">
+            <div class="w-100 row m-0 mb-4">
+                <div class="col-lg-3 col-md-3 col-sm-4 col-5 col_container">
+                <.form let={f} for={:foo} phx-change="filter_attend">
                     <div class="form-group">
-                        <%= label f, :select_month %>
+                        <%= label f, :month %>
                         <%= date_input(f, :month, type: "month", min: @attendance_data[:start_date], max: @attendance_data[:end_date], id: "attend_month", name: "month", class: "form-control") %>
                     </div>
                 </.form>
                 </div>
+                <%= if @user.user_role.role_id == 3 do %>
+                <div class="ml-2 col-lg-3 col-md-3 col-sm-4 col-5 col_container">
+                    <.form let={f} for={:foo1} phx-change="filter_attend">
+                    <div class="form-group">
+                        <%= label :f, :student %>
+                        <%= select :f, :stduent, assigns[:student_dropdown], name: "student", value: assigns[:filter_params][:student], class: "form-control", prompt: "Select Student" %>
+                    </div>
+                    </.form>
+                </div>
+                <% end %>
             </div>
         <div class="col-lg-1 col-md-2 col-sm-3 col-3 col_container list_container">
             <ul class="custom_list">
@@ -64,7 +71,7 @@
             </ul>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-5 col-5 col_container">
-            <div class={"c100 center " <> "p#{round @attendance_data[:perc]}"}>
+            <div class={"c100 center " <> "p#{@attendance_data[:perc] && (round @attendance_data[:perc]) || 0}"}>
                 <span class={(@attendance_data[:perc] < 80) && "warning"}><%= @attendance_data[:perc] %>%</span>
                 <div class="slice">
                     <div class="bar"></div>
@@ -75,6 +82,8 @@
         <div class="col-lg-7 col-md-6 col-sm-4 col-4 col_container">
 
         </div>
+
+        <%= if assigns[:show_attendance] do %>
         <div class="col-lg-12 col-sm-12 col-md-12 col-12 col_container mt-4">
             <div class="table-responsive" style="height: 230px">
                 <table class="table table-borderless">
@@ -99,6 +108,7 @@
                 </table>
             </div>
         </div>
+        <% end %>
         <% end %>
     </div>
 </div>

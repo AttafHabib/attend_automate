@@ -39,21 +39,21 @@ defmodule AppWeb.CourseLive.Index do
 
   @impl true
   def handle_event("search", %{"value" => search_string} = params, socket) do
-    IO.inspect("=============params=============")
-    IO.inspect(params)
-    IO.inspect("=============params=============")
+    courses = Enum.filter(socket.assigns.all_courses, fn course ->
+      course.name
+      |> String.downcase()
+      |> String.contains?(String.downcase(search_string))
+    end)
+
     {
       :noreply,
       socket
+      |> assign(courses: courses)
     }
   end
 
   @impl true
   def handle_event("save", %{"course" => params}, socket) do
-    IO.inspect("=============params=============")
-    IO.inspect(params)
-    IO.inspect("=============params=============")
-
     case Context.create(Course, params) do
       {:ok, dpt} ->
         if connected?(socket), do: Process.send_after(self(), "close_modals", 300)
@@ -129,14 +129,25 @@ defmodule AppWeb.CourseLive.Index do
 
   def assign_courses(%{assigns: %{user: user}}=socket) do
     courses = cond do
-      user.user_role.role_id in [1, 3] -> courses = Context.list(Course)
+      user.user_role.role_id ==1 -> courses = Context.list(Course)
                                                     |> Context.preload_selective([:department, :students, :teachers])
 
+      user.user_role.role_id == 3 -> teacher=  App.Context.Teachers.get_by_user_id(user.id)
+                                     courses=  Courses.get_by_teacher_id(teacher.id)
+                                               |> Enum.map(fn course ->
+                                                  c_offers = App.Context.CourseOffers.get_by_course(course.id)
+                                                  IO.inspect("=============c_offers=============")
+                                                  IO.inspect(c_offers)
+                                                  IO.inspect("=============c_offers=============")
+                                                  Map.put(course, :students, c_offers.student_courses)
+                                                end)
       user.user_role.role_id == 2 -> student = Students.get_by_user_id(user.id)
                                      courses = Courses.get_by_student_id(student.id)
       true -> []
     end
-    socket |> assign(courses: courses)
+    socket
+    |> assign(courses: courses)
+    |> assign(all_courses: courses)
   end
 
 end

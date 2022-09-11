@@ -10,9 +10,9 @@ defmodule App.Schema.Teacher do
     field :first_name, :string
     field :last_name, :string
     field :phone_no, :string
-    field :user_id, :string
+#    field :user_id, :string
 
-    has_one(:user, App.Schema.User)
+    belongs_to(:user, App.Schema.User)
 
     belongs_to(:department, App.Schema.Department)
 

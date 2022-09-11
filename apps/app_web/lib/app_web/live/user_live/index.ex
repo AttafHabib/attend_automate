@@ -29,6 +29,24 @@ defmodule AppWeb.UserLive.Index do
   end
 
   @impl true
+  def handle_event("validate_email", %{"value" => email}, socket) do
+    changes = socket.assigns.changeset_user.changes |> Map.put(:email, email)
+    changeset_user = Context.change(User, %User{}, changes) |> Map.put(:action, :validate)
+
+    IO.inspect("=============changeset_user=============")
+    IO.inspect(changeset_user)
+    IO.inspect("=============changeset_user=============")
+    
+    if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
+
+
+    {:noreply,
+      socket
+      |> assign(changeset_user: changeset_user)
+    }
+  end
+
+  @impl true
   def handle_event("validate", %{"_target" => ["user", "role", role], "user" => %{"role" => params}} = p, socket) do
     role = (params[role] == "true") && role
 
@@ -46,19 +64,29 @@ defmodule AppWeb.UserLive.Index do
       |> assign(:dropdown_profile, dropdown_profile)
       |> assign(:changeset_user, Context.change(User, %User{}))
       |> assign(:u_password, nil)
+      |> assign(:selected_prof, nil)
+      |> assign(:show_password, nil)
+
     }
   end
 
   @impl true
   def handle_event("validate", %{"_target" => ["user", "type", role_type], "user" => %{"type" => params}} = p, socket) do
-    data = case role_type do
-      "student" -> Context.get(Student, params[role_type])
-      "teacher" -> Context.get(Teacher, params[role_type])
+    {data, s_profile} = case role_type do
+      "student" -> {Context.get(Student, params[role_type]), params["student"]}
+      "teacher" -> {Context.get(Teacher, params[role_type]), params["teacher"]}
+    end
+
+    user = Users.get_user(data.email)
+    email = if(user) do
+      nil
+    else
+      data.email
     end
 
     params = %{
       username: Enum.join(["#{data.first_name}", "#{data.last_name}", " "]),
-      email: data.email,
+      email: email,
       password: App.PasswordGenerator.generate(),
     }
 
@@ -70,10 +98,11 @@ defmodule AppWeb.UserLive.Index do
       socket
       |> assign(:changeset_user, changeset_user)
       |> assign(:u_password, params[:password])
+      |> assign(:selected_prof, s_profile)
     }
   end
 
-  def handle_event("show_password", _, socket) do
+  def handle_event("show_password", p, socket) do
     if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
     {:noreply, assign(socket, :show_password, !socket.assigns[:show_password])}
   end
@@ -122,6 +151,31 @@ defmodule AppWeb.UserLive.Index do
 #      |> assign(:changeset_user, changeset_user)
 #    }
 #  end
+  @impl true
+  def handle_event("save", %{"user" => %{"type" => %{"teacher" => id}} = params}, socket) do
+    case Context.create(User, params) do
+      {:ok, user} -> role = Roles.get_by_role(socket.assigns.role)
+                     Context.create(UserRole, %{user_id: user.id, role_id: role.id})
+
+                     teacher = Context.get(Teacher, id)
+                     IO.inspect("=============teacher=============")
+                     IO.inspect(teacher)
+                     IO.inspect(%{user_id: user.id})
+                     IO.inspect("=============teacher=============")
+                     Context.update(Teacher, teacher, %{user_id: user.id})
+
+                     users = Users.list_users()
+
+                     if connected?(socket), do: Process.send_after(self(), "close_modals", 300)
+
+                     {:noreply, assign(socket, :users, users)}
+      {:error, changeset} -> IO.inspect("=============changeset=============")
+                             IO.inspect(changeset)
+                             IO.inspect("=============changeset=============")
+
+                             {:noreply, socket}
+    end
+  end
   
   @impl true
   def handle_event("save", %{"user" => params}, socket) do
@@ -164,6 +218,9 @@ defmodule AppWeb.UserLive.Index do
       |> assign(:modal, modal)
       |> assign(:changeset_user, changeset_user)
 #      |> assign(:roles, roles)
+      |> assign(:u_password, nil)
+      |> assign(:selected_prof, nil)
+      |> assign(:show_password, nil)
       |> assign(:role, "admin")
 #      |> assign(:profiles, [])
     }

@@ -122,4 +122,8 @@ defmodule App.Context.Teachers do
     |> Repo.update
   end
 
+  def get_by_user_id(user_id) do
+    from(t in Teacher, where: t.user_id == ^user_id)|> Repo.one
+  end
+
 end

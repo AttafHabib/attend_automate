@@ -19,7 +19,19 @@ defmodule App.Context.Users do
 
   """
   def list_users do
-    Repo.all(from User, preload: [:student, user_role: :role])
+   (from User, preload: [user_role: :role])
+   |> Repo.all
+   |> preload_profile
+  end
+
+  def preload_profile(users) do
+    Enum.map(users, fn user ->
+      case user.user_role.role_id do
+        2 -> Repo.preload(user, :student)
+        3 -> Repo.preload(user, :teacher)
+        _ -> user
+      end
+    end)
   end
 
   @doc """

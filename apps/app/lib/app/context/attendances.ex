@@ -104,11 +104,19 @@ defmodule App.Context.Attendances do
 
   def get_by_s_course(s_course_id, month \\ nil) do
     from(at in Attendance,
-      where: at.student_course_id == ^s_course_id,
       order_by: [asc: at.date]
     )
+    |> filter_by_student_course(s_course_id)
     |> filter_by_month(month)
     |> Repo.all
+  end
+
+  def filter_by_student_course(query, s_course_ids) when is_list(s_course_ids) do
+    from([q] in query, where: q.student_course_id in ^s_course_ids)
+  end
+
+  def filter_by_student_course(query, s_course_id) do
+    from([q] in query, where: q.student_course_id == ^s_course_id)
   end
 
   def filter_by_month(query, month) when is_nil month do

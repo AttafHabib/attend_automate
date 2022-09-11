@@ -123,4 +123,11 @@ defmodule App.Context.CourseOffers do
       where: sc.id == ^s_course_id
     ) |> Repo.one
   end
+
+  def get_by_course(course_id) do
+    from(co in CourseOffer,
+      where: co.id == ^course_id,
+      preload: [:student_courses]
+    ) |> Repo.one
+  end
 end

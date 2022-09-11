@@ -43,12 +43,15 @@
                     <td><%= user.username %></td>
                     <td><%= user.email %></td>
                     <td><%= String.capitalize(user.user_role && user.user_role.role.name || "") %></td>
-                    <%= if user.user_role.role.name == "student" do %>
+                    <%= if user.user_role.role_id == 2 do %>
                     <td><a href={Routes.student_show_path(@socket, :show, user.student.id)}><%= user.student.first_name <> " " <> user.student.last_name %></a></td>
-                    <% else %>
+                    <% end %>
+                    <%= if user.user_role.role_id == 3 do %>
+                    <td><a href="#"><%= user.teacher.first_name <> " " <> user.teacher.last_name %></a></td>
+                    <% end %>
+                    <%= if user.user_role.role_id == 1 do %>
                     <td></td>
                     <% end %>
-                    <td></td>
                 </tr>
                 <% end %>
                 </tbody>
@@ -93,7 +96,7 @@
                     <% end %>
                     <%= if @role == "teacher" do %>
                     <%= label :user, :teacher %>
-                    <%= select(:user, :teacher, @dropdown_profile, name: "user[type][teacher]", phx_change: "validate", class: "form-control", prompt: "Select teacher to create user", required: true) %>
+                    <%= select(:user, :teacher, @dropdown_profile, name: "user[type][teacher]", value: assigns[:selected_prof], phx_change: "validate", class: "form-control", prompt: "Select teacher to create user", required: true) %>
                     <% end %>
 
                     <div class="form-group">
@@ -103,8 +106,9 @@
                     </div>
                     <div class="form-group">
                         <%= label f, :email %>
-                        <%= text_input f, :email, value: assigns[:changeset_user].changes[:email], disabled: true, class: "form-control", required: true %>
+                        <%= text_input f, :email, value: assigns[:changeset_user].changes[:email], phx_keyup: "validate_email", class: "form-control", required: true %>
                         <%= hidden_input f, :email, value: assigns[:changeset_user].changes[:email] %>
+                        <%= error_tag f, :email %>
                     </div>
                     <div class="form-group">
                         <%= label f, :password %>

@@ -37,8 +37,8 @@
                 <%= for dpt <- @departments do %>
                 <tr>
                     <td><%= dpt.name %></td>
-                    <td><%= 0 %></td>
-                    <td><%= 0 %></td>
+                    <td><%= Enum.count dpt.students %></td>
+                    <td><%= Enum.count dpt.courses %></td>
                 </tr>
                 <% end %>
                 </tbody>
