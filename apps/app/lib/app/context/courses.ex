@@ -127,4 +127,20 @@ defmodule App.Context.Courses do
     )
     Repo.all query_
   end
+
+  def get_by_student_id(student_id) do
+    from(c in Course,
+      left_join: co in assoc(c, :course_offers),
+      left_join: sc in assoc(co, :student_courses),
+      left_join: t in assoc(co, :teacher),
+      where: sc.student_id == ^student_id,
+      select: %{
+        id: c.id,
+        course_code: c.course_code,
+        name: c.name,
+        teacher_name: fragment("concat(?, ' ', ?)",t.first_name, t.last_name),
+
+      }
+    ) |> Repo.all
+  end
 end

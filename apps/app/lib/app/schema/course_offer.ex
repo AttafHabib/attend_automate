@@ -3,6 +3,9 @@ defmodule App.Schema.CourseOffer do
   import Ecto.Changeset
 
   schema "course_offers" do
+    field :start_date, :date
+    field :end_date, :date
+
     belongs_to(:course, App.Schema.Course)
     belongs_to(:teacher, App.Schema.Teacher)
     has_one :department, through: [:course, :department]
@@ -15,6 +18,8 @@ defmodule App.Schema.CourseOffer do
   @required_fields ~w|
   course_id
   teacher_id
+  start_date
+  end_date
   |a
 
   @doc false

@@ -70,7 +70,7 @@ defmodule AppWeb.StudentLive.CourseComponent do
     p = freq[:true] || 0
     a = freq[:false] || 0
     total = p + a
-    perc = (total != 0) && (p/total) or 0
+    perc = (total != 0) && (p/total) || 0
     {p, total, perc}
   end
 end

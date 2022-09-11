@@ -116,4 +116,11 @@ defmodule App.Context.CourseOffers do
     |> Repo.all
     |> Enum.map(&({&1.name, &1.id}))
   end
+
+  def get_by_s_course_id(s_course_id) do
+    from(c in CourseOffer,
+      left_join: sc in assoc(c, :student_courses),
+      where: sc.id == ^s_course_id
+    ) |> Repo.one
+  end
 end

@@ -4,23 +4,22 @@ defmodule AppWeb.CourseLive.Index do
 
   alias App.Schema.{Course, Department}
   alias App.Context
-  alias App.Context.Users
+  alias App.Context.{Users, Courses, Students}
 
   def mount(params, session, socket) do
     case Users.verify_user(session["guardian_default_token"]) do
       {:ok, user} ->
-        courses = Context.list(Course)
-                  |> Context.preload_selective([:department, :students, :teachers])
+#        courses= assign_courses(user)
 
-        Enum.map(courses, fn course ->
-          Enum.join(Enum.map(course.teachers, &(&1.first_name <> " " <> &1.last_name)), ", ")|> IO.inspect()
-        end)
+#        Enum.map(courses, fn course ->
+#          Enum.join(Enum.map(course.teachers, &(&1.first_name <> " " <> &1.last_name)), ", ")|> IO.inspect()
+#        end)
 
         {
           :ok,
           socket
-          |> assign(courses: courses)
           |> assign(user: user)
+          |> assign_courses()
 
         }
 
@@ -126,6 +125,18 @@ defmodule AppWeb.CourseLive.Index do
         "close_modals",
         %{"modal" => socket.assigns.modal}
       )    }
+  end
+
+  def assign_courses(%{assigns: %{user: user}}=socket) do
+    courses = cond do
+      user.user_role.role_id in [1, 3] -> courses = Context.list(Course)
+                                                    |> Context.preload_selective([:department, :students, :teachers])
+
+      user.user_role.role_id == 2 -> student = Students.get_by_user_id(user.id)
+                                     courses = Courses.get_by_student_id(student.id)
+      true -> []
+    end
+    socket |> assign(courses: courses)
   end
 
 end

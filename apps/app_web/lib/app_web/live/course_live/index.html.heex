@@ -28,18 +28,26 @@
                 <thead>
                 <th>Code</th>
                 <th>CourseName</th>
-                <th>Department</th>
                 <th>Teacher</th>
+                <%= if @user.user_role.role_id in [1, 3] do %>
+                <th>Department</th>
                 <th>TotalStudents</th>
+                <% end %>
                 </thead>
                 <tbody>
                 <%= for course <- @courses do %>
                 <tr class="cursor_pointer" phx-click="show_course" phx-value-id={ course.id }>
                     <td><%= course.course_code %></td>
                     <td><%= course.name %></td>
-                    <td><%= course.department.name %></td>
+                    <%= if @user.user_role.role_id in [1, 3] do %>
                     <td><%= Enum.join(Enum.map(course.teachers, &(&1.first_name <> " " <> &1.last_name)), ", ") %></td>
+                    <% else %>
+                    <td><%= course.teacher_name %></td>
+                    <% end %>
+                    <%= if @user.user_role.role_id in [1, 3] do %>
+                    <td><%= course.department.name %></td>
                     <td><%= Enum.count course.students %></td>
+                    <% end %>
                 </tr>
                 <% end %>
                 </tbody>

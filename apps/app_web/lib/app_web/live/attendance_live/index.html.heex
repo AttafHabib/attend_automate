@@ -1,23 +1,23 @@
-<div class="m-0 w-100 h-100 row flex-column">
-    <div class="row m-0">
+<div class="prof_cont">
+    <div class="row">
         <%= if @user.user_role.role_id in [1, 3] do %>
-        <div class="col-lg-10 col-md-10 col-sm-10 col-10">
+        <div class="col-lg-10 col-md-10 col-sm-10 col-10 col_container">
             <h2 class="text-left">Attendance</h2>
         </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-2 d-flex justify-content-end">
+        <div class="col-lg-2 col-md-2 col-sm-2 col-2 d-flex justify-content-end col_container">
             <button class="btn sbtn" style="width: unset" phx-click="get_face">
                 <i class="fa fa-plus pr-3"></i>
                 Save Face
             </button>
         </div>
         <% else %>
-        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 col_container">
             <h2 class="text-left">Attendance</h2>
         </div>
         <% end %>
     </div>
-    <div class="row m-0">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 col_container">
             <div class="tab_section">
                 <div class="tabsbox mb-4">
                     <ul class="nav nav-tabs">
@@ -35,16 +35,71 @@
             </div>
         </div>
     </div>
-    <div class="row m-0">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-            <div class="bg-white">
-                <%= if assigns[:enc_attend] do %>
-                <svg style="height: 410px; width: 410px">
-                    <%= raw @dataset %>
-                </svg>
-                <% end %>
+    <div class="row w-100 bg-white"  style="padding: 15px">
+        <%= if assigns[:attendance_data] do %>
+            <div class="w-100">
+                <div class="col-lg-3 col-md-3 col-sm-4 col-5 col_container mb-4">
+                    <.form let={f} for={:foo} phx-change="filter_attend">
+                    <div class="form-group">
+                        <%= label f, :select_month %>
+                        <%= date_input(f, :month, type: "month", min: @attendance_data[:start_date], max: @attendance_data[:end_date], id: "attend_month", name: "month", class: "form-control") %>
+                    </div>
+                </.form>
+                </div>
+            </div>
+        <div class="col-lg-1 col-md-2 col-sm-3 col-3 col_container list_container">
+            <ul class="custom_list">
+                <li>
+                    <span>Total:&nbsp;</span>
+                    <span><%= @attendance_data[:total] %></span>
+                </li>
+                <li>
+                    <span>Present:&nbsp;</span>
+                    <span><%= @attendance_data[:pr] %></span>
+                </li>
+                <li>
+                    <span>Absent:&nbsp;</span>
+                    <span><%= @attendance_data[:ab] %></span>
+                </li>
+            </ul>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-5 col-5 col_container">
+            <div class={"c100 center " <> "p#{round @attendance_data[:perc]}"}>
+                <span class={(@attendance_data[:perc] < 80) && "warning"}><%= @attendance_data[:perc] %>%</span>
+                <div class="slice">
+                    <div class="bar"></div>
+                    <div class="fill"></div>
+                </div>
             </div>
         </div>
+        <div class="col-lg-7 col-md-6 col-sm-4 col-4 col_container">
+
+        </div>
+        <div class="col-lg-12 col-sm-12 col-md-12 col-12 col_container mt-4">
+            <div class="table-responsive" style="height: 230px">
+                <table class="table table-borderless">
+                    <thead>
+                    <th>No</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    </thead>
+                    <tbody>
+                    <%= Enum.with_index assigns[:attendance_data][:data], fn attend, index -> %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= attend.date %></td>
+                        <td>
+                        <span class={"attend_status #{attend.status && "comp" || "in-comp"}"}>
+                            <%= attend.status && "Present" || "Absent" %>
+                        </span>
+                        </td>
+                    </tr>
+                    <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <% end %>
     </div>
 </div>
 <%= if assigns[:action] == :get_face do %>

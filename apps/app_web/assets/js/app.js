@@ -34,8 +34,10 @@ window.jQuery = jQuery
 window.$ = jQuery
 
 import {modalHook} from '../vendor/modal.js';
+// import {piechartHook} from "../vendor/piechart";
 let Hooks = {}
 Hooks.modals = modalHook;
+// Hooks.piechart = piechartHook;
 
 
 
