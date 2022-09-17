@@ -76,7 +76,9 @@ function open_modals(modal) {
     // {window.$(".modal-backdrop.show").css("opacity", 0)}
 }
 function display_modals(modal) {
+    console.log("Display")
     modal = modal.modal
+    console.log(modal)
     window.$("#"+modal).addClass("show");
     window.$("#"+modal).css("overflow-y", "auto")
     window.$("#"+modal).css({"display": "block"});

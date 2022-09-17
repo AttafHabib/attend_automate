@@ -34,9 +34,11 @@ window.jQuery = jQuery
 window.$ = jQuery
 
 import {modalHook} from '../vendor/modal.js';
+import {datepickerHook} from '../vendor/date_picker.js';
 // import {piechartHook} from "../vendor/piechart";
 let Hooks = {}
 Hooks.modals = modalHook;
+Hooks.DatePicker = datepickerHook;
 // Hooks.piechart = piechartHook;
 
 

@@ -8,6 +8,11 @@ defmodule AppWeb.Utils.Client do
     request_url(:get, url)
   end
 
+  def train_model() do
+    url = "train_model"
+    request_url(:post, url)
+  end
+
 #  def get_(params) do
 #    token = params[:authentication_key]
 #    headers = [{"authentication_key", token}]
@@ -52,6 +57,23 @@ defmodule AppWeb.Utils.Client do
 
       {:ok, %HTTPoison.Response{status_code: code, body: body}} when code == 200 ->
         {:ok, body}
+
+      {:ok, %HTTPoison.Response{body: {:error, data}}} ->
+        {:error, data}
+
+      {:ok, %HTTPoison.Response{status_code: code, body: body}} when (code == 404) ->
+        {:error, body}
+
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        {:error, "Api Error: #{reason}"}
+    end
+  end
+
+  def request_url(:post, url) do
+    case post(url, []) do
+
+      {:ok, %HTTPoison.Response{status_code: code, body: body}} when code == 200 ->
+        body
 
       {:ok, %HTTPoison.Response{body: {:error, data}}} ->
         {:error, data}
@@ -123,6 +145,7 @@ defmodule AppWeb.Utils.Client do
       {:ok, %{"data" => data, "message" => "Image Extracted"}} -> data
       {:ok, %{"data" => data, "message" => "Error"}} -> {:error, data}
       {:error, %Jason.DecodeError{}} -> {:error, "Decoding Error"}
+      body -> body
     end
   end
 

@@ -9,6 +9,12 @@
                     <i class="fa fa-plus pr-3"></i>
                     Add Face
                 </button>
+                <%= if @user.user_role.role_id == 1 do %>
+                <button class="btn sbtn ml-2" style="width: unset" phx-click="train_model">
+                    <i class="fa fa-solid fa-microchip"></i>
+                    Train
+                </button>
+                <% end %>
             </div>
         </div>
         <div class="row">

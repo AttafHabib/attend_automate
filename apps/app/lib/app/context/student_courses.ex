@@ -6,7 +6,7 @@ defmodule App.Context.StudentCourses do
   import Ecto.Query, warn: false
   alias App.Repo
 
-  alias App.Schema.StudentCourse
+  alias App.Schema.{StudentCourse, Attendance}
 
   @doc """
   Returns the list of student_courses.
@@ -101,4 +101,22 @@ defmodule App.Context.StudentCourses do
   def change_student_course(%StudentCourse{} = student_course, attrs \\ %{}) do
     StudentCourse.changeset(student_course, attrs)
   end
+
+
+  def get_student_course_preloads(c_offer_id, params) do
+    from(sc in StudentCourse,
+      where: sc.course_offer_id == ^c_offer_id,
+      preload: [:student, attendances: ^(from atd in Attendance, where: atd.date == ^params["date"])]
+    )
+#    |> filter_attendance()
+    |> Repo.all()
+  end
+
+#  def filter_attendance(_, params) when is_nil params do
+#    params
+#  end
+
+#  def filter_attendance(query, %{"date" => date}) do
+#    from([..., atd] in query, where: atd.date == ^date)
+#  end
 end

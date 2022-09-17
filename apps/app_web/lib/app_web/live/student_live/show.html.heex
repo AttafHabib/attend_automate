@@ -47,7 +47,7 @@
                     <%= if assigns[:tab_action] == "attendance" do %>
                     <% end %>
                     <%= if assigns[:tab_action]  == "faces" do %>
-                        <.live_component module={AppWeb.StudentLive.FaceExtractComponent} id="face_component" student_id={@student.id} modal={assigns[:modal]} />
+                        <.live_component module={AppWeb.StudentLive.FaceExtractComponent} id="face_component" student_id={@student.id} user={@user} modal={assigns[:modal]} />
                     <% end %>
                     <%= if assigns[:tab_action]  == "courses" do %>
                         <.live_component module={AppWeb.StudentLive.CourseComponent} id="course_component" student_id={@student.id} modal={assigns[:modal]} />

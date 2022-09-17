@@ -2,12 +2,16 @@ import io
 
 import cv2
 from flask import Flask, send_file, Response, make_response
+
+from directory_helper import get_uploads_dir
 from face_extractor import get_single_face
 from io_helper import save_image, save_rect_image
+from recognizer import train
 
 app = Flask(__name__)
 
-@app.route("/user/<id>/<user_name>/extract")
+
+@app.route("/user/<id>/<user_name>/extract", methods=['GET'])
 def get_user_face(id, user_name):
     f_images = get_single_face()
 
@@ -33,3 +37,13 @@ def get_user_face(id, user_name):
         # response = make_response(buffer.tobytes(), 404)
         response.headers['Content-Type'] = 'application/json'
         return response
+
+
+@app.route("/train_model", methods=['POST'])
+def train_model():
+    path = get_uploads_dir()
+    train(path)
+    response = make_response({}, 200)
+    response.headers['Content-Type'] = 'application/json'
+
+    return response

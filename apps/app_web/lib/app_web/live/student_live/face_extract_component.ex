@@ -5,14 +5,15 @@ defmodule AppWeb.StudentLive.FaceExtractComponent do
   alias App.Schema.{Student, File}
   alias AppWeb.Utils.ClientHelper
 
-  def update(%{student_id: id}, socket) do
-    student = Students.get_student!(id) |> IO.inspect()
+  def update(%{student_id: id, user: user}, socket) do
+    student = Students.get_student!(id)
                   |> Context.preload_selective([:user, :face_images])
 
     {
       :ok,
       socket
       |> assign(student: student)
+      |> assign(user: user)
       |> assign(img_id: DateTime.utc_now |> DateTime.to_unix |> to_string)
     }
   end
@@ -21,34 +22,56 @@ defmodule AppWeb.StudentLive.FaceExtractComponent do
   def handle_event("get_face", params, socket) do
     student = socket.assigns.student
     user_id = student.user.id
-    case ClientHelper.get_user_face(user_id, String.downcase(student.first_name)) do
-      {:ok, params} -> IO.inspect(params, label: :params)
 
-        params |> Map.put("user_id", user_id) |> add_files
-                       student = Students.get_student!(student.id)
+    Enum.map(1..100, fn _x ->
+      case ClientHelper.get_user_face(user_id, String.downcase(student.first_name)) do
+        {:ok, params} -> IO.inspect(params, label: :params)
 
-                       if connected?(socket), do: Process.send_after(self(), "open_modals_show_full_image", 300)
-                       if connected?(socket), do: Process.send_after(self(), "close_modals_show_full_image", 10000)
+                         params |> Map.put("user_id", user_id) |> add_files
+#                         student = Students.get_student!(student.id)
 
-                       {
-                         :noreply,
-                         socket
-                         |> assign(student: student)
-                         |> assign(img_id: DateTime.utc_now |> DateTime.to_unix |> to_string)
-                         |> assign(modal: "show_full_image")
-                       }
+#                         if connected?(socket), do: Process.send_after(self(), "open_modals_show_full_image", 300)
+#                         if connected?(socket), do: Process.send_after(self(), "close_modals_show_full_image", 1000)
 
-      {:error, data} -> params |> Map.put("user_id", user_id) |> add_files
-                        if connected?(socket), do: Process.send_after(self(), "open_modals_show_full_image", 300)
-                        if connected?(socket), do: Process.send_after(self(), "close_modals_show_full_image", 10000)
+                         {
+                           :noreply,
+                           socket
+#                           |> assign(student: student)
+#                           |> assign(img_id: DateTime.utc_now |> DateTime.to_unix |> to_string)
+#                           |> assign(modal: "show_full_image")
+                         }
 
-                        {
-                          :noreply,
-                          socket
-                          |> put_flash(:error, "Unrecognizable face! Please correct camera or lightning")
-                          |> assign(img_id: DateTime.utc_now |> DateTime.to_unix |> to_string)
-                          |> assign(modal: "show_full_image")
-                        }
+        {:error, data} -> params |> Map.put("user_id", user_id) |> add_files
+                          if connected?(socket), do: Process.send_after(self(), "open_modals_show_full_image", 300)
+                          if connected?(socket), do: Process.send_after(self(), "close_modals_show_full_image", 10000)
+
+                          {
+                            :noreply,
+                            socket
+                            |> put_flash(:error, "Unrecognizable face! Please correct camera or lightning")
+                            |> assign(img_id: DateTime.utc_now |> DateTime.to_unix |> to_string)
+                            |> assign(modal: "show_full_image")
+                          }
+      end
+#      Process.sleep(2000)
+    end)
+
+    student = Students.get_student!(socket.assigns.student.id)
+              |> Context.preload_selective([:user, :face_images])
+
+    {
+      :noreply,
+      socket
+      |> assign(student: student)
+      |> assign(img_id: DateTime.utc_now |> DateTime.to_unix |> to_string)
+    }
+  end
+
+  @impl true
+  def handle_event("train_model", _, socket) do
+    case ClientHelper.train_model() do
+      {:ok, body} -> {:noreply, socket |> put_flash(:info, "Model Trained Succsessfully")}
+      {:error, _} -> {:noreply, socket}
     end
   end
 

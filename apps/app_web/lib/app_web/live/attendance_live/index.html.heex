@@ -52,6 +52,12 @@
                     </div>
                     </.form>
                 </div>
+                <div class="col-lg-5 col-md-6 col-sm-4 col-2 col_container d-flex justify-content-end align-items-center">
+                    <button class="btn sbtn ml-2" style="width: unset; margin-top: 20px" phx-click="open_modals" phx-value-modal="mark_attendance">
+                        <i class="fa fa-solid fa-clipboard-user"></i>
+                        Mark Attendance
+                    </button>
+                </div>
                 <% end %>
             </div>
         <div class="col-lg-1 col-md-2 col-sm-3 col-3 col_container list_container">
@@ -119,3 +125,62 @@
     </div>
 </div>
 <% end %>
+<div class="popups" phx-hook="modals" id="modals-div-12">
+    <%= if assigns[:modal] == "mark_attendance" do %>
+    <div class="modal fade" id={assigns[:modal]}>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <span class="close" phx-click="close_modals" data-dismiss="modal">&times;</span>
+                    <h4 class="text-center" style="color: #812E23">Mark Attendance</h4>
+
+                    <div class="row justify-content-center">
+                        <button class="btn sbtn mr-4" style="width: unset; margin-top: 20px" phx-click="mark_attendance" phx-value-type="manual">
+                            <i class="fa fa-solid fa-clipboard-user"></i>
+                            Manual
+                        </button>
+                        <button class="btn sbtn ml-4" style="width: unset; margin-top: 20px" phx-click="mark_attendance" phx-value-type="auto">
+                            <i class="fa fa-solid fa-clipboard-user"></i>
+                            Auto
+                        </button>
+                    </div>
+                    <%= if assigns[:attendance_type] do %>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                            <.form let={f} for={:foo}>
+                            <div class="form-group">
+                                <%= label f, :date %>
+                                <%= date_input(f, :date, type: "date", phx_change: "attendance_date", min: @date_data[:min_date], max: @date_data[:max_date], value: @date_data[:selected_date], id: "date_picker_custom", name: "date", class: "form-control") %>
+                            </div>`
+                            <div class="table-responsive">
+                                <table class="table table-borderless">
+                                    <thead>
+                                    <th>Roll No</th>
+                                    <th>Name</th>
+                                    <th>Attendance</th>
+                                    </thead>
+                                    <tbody>
+                                    <%= for student <- @c_students do %>
+                                    <% value =  student.attendance && "#{student.student_course_id}_p" || "#{student.student_course_id}_a" %>
+                                    <% IO.inspect(student.attend_dropdown) %>
+                                        <tr>
+                                            <td><%= student.roll_no %></td>
+                                            <td><%= student.student_name %></td>
+                                            <td>
+                                                <%= select(f, :status, student.attend_dropdown, phx_change: "update_attendance", disabled: (!@date_data[:selected_date] && true) ,id: "attendance_#{student.id}", name: "status", value: value, class: "form-control attend_status #{student.attendance && "comp" || "in-comp"}") %>
+                                            </td>
+                                        </tr>
+                                    <% end %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </.form>
+                    </div>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% end %>
+</div>

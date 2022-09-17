@@ -102,12 +102,12 @@ defmodule App.Context.Attendances do
     Attendance.changeset(attendance, attrs)
   end
 
-  def get_by_s_course(s_course_id, month \\ nil) do
+  def get_by_s_course(s_course_id, params \\ nil) do
     from(at in Attendance,
       order_by: [asc: at.date]
     )
     |> filter_by_student_course(s_course_id)
-    |> filter_by_month(month)
+    |> filter_by_date(params)
     |> Repo.all
   end
 
@@ -119,12 +119,16 @@ defmodule App.Context.Attendances do
     from([q] in query, where: q.student_course_id == ^s_course_id)
   end
 
-  def filter_by_month(query, month) when is_nil month do
+  def filter_by_date(query, params) when is_nil params do
     query
   end
 
-  def filter_by_month(query, month) do
+  def filter_by_date(query, %{"month" => month}) do
     from([q] in query, where: fragment("EXTRACT(MONTH FROM ?)", q.date) == ^month)
+  end
+
+  def filter_by_date(query, %{"date" => date}) do
+    from([q] in query, where: q.date == ^date)
   end
 
 end

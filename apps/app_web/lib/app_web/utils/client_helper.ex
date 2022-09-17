@@ -5,4 +5,8 @@ defmodule AppWeb.Utils.ClientHelper do
     Client.get_user_face(user_id, user_name)
   end
 
+  def train_model() do
+    Client.train_model()
+  end
+
 end
