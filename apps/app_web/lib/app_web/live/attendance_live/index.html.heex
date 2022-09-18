@@ -144,14 +144,54 @@
                             Auto
                         </button>
                     </div>
-                    <%= if assigns[:attendance_type] do %>
+                    <%= if assigns[:attendance_type] == "auto" do %>
+                    <div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                            <.form let={f} for={:foo} id="auto_attend_form">
+                            <div class="form-group">
+                                <%= label f, :date %>
+                                <%= date_input(f, :date, type: "date", phx_change: "update_attendance", min: @date_data[:min_date], max: @date_data[:max_date], value: @date_data[:selected_date], id: "date_picker_custom", name: "auto[date]", class: "form-control") %>
+                            </div>`
+                            </.form>
+                        <%= if assigns[:attend_file] do %>
+                        <img src={@attend_file.path} style="width: 100%" height="200px">
+                        <% end %>
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <thead>
+                                <th>Roll No</th>
+                                <th>Name</th>
+                                <th>Attendance</th>
+                                </thead>
+                                <tbody>
+                                <%= for student <- assigns[:c_students] || [] do %>
+                                <tr>
+                                    <td><%= student.roll_no %></td>
+                                    <td><%= student.student_name %></td>
+                                    <td>
+                                        <span class={student.attendance && "attend_status comp" || "attend_status in-comp"}>
+                                        <%= student.attendance && "Present" || "Absent" %>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <% end %>
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                    <% end %>
+                    <%= if assigns[:attendance_type] == "manual" do %>
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                            <.form let={f} for={:foo}>
+                            <.form let={f} for={:foo} id="manual_attend_form">
                             <div class="form-group">
                                 <%= label f, :date %>
                                 <%= date_input(f, :date, type: "date", phx_change: "attendance_date", min: @date_data[:min_date], max: @date_data[:max_date], value: @date_data[:selected_date], id: "date_picker_custom", name: "date", class: "form-control") %>
                             </div>`
+                            <%= if assigns[:attend_file] do %>
+                            <img src={@attend_file.path} style="width: 100%" height="200px">
+                            <% end %>
                             <div class="table-responsive">
                                 <table class="table table-borderless">
                                     <thead>
@@ -162,12 +202,11 @@
                                     <tbody>
                                     <%= for student <- @c_students do %>
                                     <% value =  student.attendance && "#{student.student_course_id}_p" || "#{student.student_course_id}_a" %>
-                                    <% IO.inspect(student.attend_dropdown) %>
                                         <tr>
                                             <td><%= student.roll_no %></td>
                                             <td><%= student.student_name %></td>
                                             <td>
-                                                <%= select(f, :status, student.attend_dropdown, phx_change: "update_attendance", disabled: (!@date_data[:selected_date] && true) ,id: "attendance_#{student.id}", name: "status", value: value, class: "form-control attend_status #{student.attendance && "comp" || "in-comp"}") %>
+                                                <%= select(f, :status, student.attend_dropdown, phx_change: "update_attendance", disabled: (!@date_data[:selected_date] && true) , id: student.force_update, name: "s_course_#{student.student_course_id}", value: value, class: "form-control attend_status #{student.attendance && "comp" || "in-comp"}") %>
                                             </td>
                                         </tr>
                                     <% end %>

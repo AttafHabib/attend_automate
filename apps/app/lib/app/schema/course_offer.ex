@@ -10,6 +10,8 @@ defmodule App.Schema.CourseOffer do
     belongs_to(:teacher, App.Schema.Teacher)
     has_one :department, through: [:course, :department]
 
+    has_many(:attend_files, App.Schema.AttendFile)
+
     has_many(:student_courses, App.Schema.StudentCourse)
 
     timestamp()

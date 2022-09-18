@@ -1,3 +1,11 @@
 trained_model.yml
 
 /photos
+
+/dataset1
+
+*.jpg
+
+trained_model.yml
+
+trainer1.yml

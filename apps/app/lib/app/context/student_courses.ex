@@ -112,6 +112,22 @@ defmodule App.Context.StudentCourses do
     |> Repo.all()
   end
 
+  def get_by_user_ids(user_ids, c_offer_id) when is_list user_ids do
+    from(sc in StudentCourse,
+      left_join: std in assoc(sc, :student),
+      where: std.user_id in ^user_ids and sc.course_offer_id == ^c_offer_id
+    )
+    |> Repo.all()
+  end
+
+  def filter_by_user_ids(user_ids, c_offer_id) when is_list user_ids do
+    from(sc in StudentCourse,
+      left_join: std in assoc(sc, :student),
+      where: not(std.user_id in ^user_ids) and sc.course_offer_id == ^c_offer_id
+    )
+    |> Repo.all()
+  end
+
 #  def filter_attendance(_, params) when is_nil params do
 #    params
 #  end

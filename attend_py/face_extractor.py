@@ -93,6 +93,7 @@ def get_single_face_(web_cam):
     # read image
     (_, image_) = web_cam.read()
     # img1 = image_.copy()
+    image_ = cv2.imread('4.jpg')
     gray_img = cv2.cvtColor(image_, cv2.COLOR_BGR2GRAY)
 
     height, width = image_.shape[:2]
@@ -145,6 +146,42 @@ def get_single_face_(web_cam):
     #     return (0, image_)
 
 
+def get_multiple_faces(web_cam):
+    # read image
+    (_, image_) = web_cam.read()
+    # img1 = image_.copy()
+    image_ = cv2.imread('2.jpg')
+    gray_img = cv2.cvtColor(image_, cv2.COLOR_BGR2GRAY)
+
+    height, width = image_.shape[:2]
+    resized_image = cv2.resize(image_, (300, 300))
+
+    # ImageNet mean rgb pixel intensity values
+    blob = cv2.dnn.blobFromImage(resized_image, 1.0, (600, 600), (104.0, 117.0, 123.0))
+
+    net.setInput(blob)
+    faces = net.forward()
+    # OPENCV DNN
+    # [,frame, no of detections, [classid, class score, conf, x,y,h,w]]
+    face_lists = [(gray_img, image_)]
+    for i in range(faces.shape[2]):
+        confidence = faces[0, 0, i, 2]
+        # ensure confidence is greater than minimum confidence
+        if confidence > 0.5:
+            # compute coordinates of the bounding box
+            box = faces[0, 0, i, 3:7] * numpy.array([width, height, width, height])
+
+            (x_start, y_start, x_end, y_end) = box.astype("int")
+
+            face = gray_img[y_start:y_end, x_start:x_end]
+            cv2.imwrite('%s.png' % (confidence), face)
+            face_lists.append(box)
+
+            # return (1, box, gray_img, image_)
+        # else:
+        #     return (0, gray_img)
+    return face_lists
+
 def align_face(face, web_cam):
     eyes_classifier = cv2.CascadeClassifier(eyes_cascade)
     eyes = eyes_classifier.detectMultiScale(face)
@@ -155,7 +192,6 @@ def align_face(face, web_cam):
     # eyes = extract_eyes(eyes)
 
     # for (x, y, w, h) in eyes:
-
 
     cv2.imshow("dnn", face)
     q = cv2.waitKey(0)

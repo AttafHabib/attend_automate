@@ -23,7 +23,7 @@ defmodule AppWeb.StudentLive.FaceExtractComponent do
     student = socket.assigns.student
     user_id = student.user.id
 
-    Enum.map(1..100, fn _x ->
+    Enum.map([1], fn _x ->
       case ClientHelper.get_user_face(user_id, String.downcase(student.first_name)) do
         {:ok, params} -> IO.inspect(params, label: :params)
 

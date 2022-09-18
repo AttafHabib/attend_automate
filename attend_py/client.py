@@ -6,7 +6,7 @@ from flask import Flask, send_file, Response, make_response
 from directory_helper import get_uploads_dir
 from face_extractor import get_single_face
 from io_helper import save_image, save_rect_image
-from recognizer import train
+from recognizer import train, recognize_face
 
 app = Flask(__name__)
 
@@ -46,4 +46,16 @@ def train_model():
     response = make_response({}, 200)
     response.headers['Content-Type'] = 'application/json'
 
+    return response
+
+
+@app.route("/recognize_faces", methods=['Get'])
+def recognize_faces():
+    recognized_ids, file_name = recognize_face()
+
+    data = {"data": {"file_name": file_name, "recognized_ids": recognized_ids}, "message": "Faces Recognized"}
+
+    response = make_response(data, 200)
+
+    response.headers['Content-Type'] = 'application/json'
     return response

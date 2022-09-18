@@ -116,18 +116,32 @@ defmodule App.Context.Attendances do
   end
 
   def filter_by_student_course(query, s_course_id) do
+    IO.inspect("==========================")
+    IO.inspect(s_course_id)
+    IO.inspect("==========================")
     from([q] in query, where: q.student_course_id == ^s_course_id)
   end
 
   def filter_by_date(query, params) when is_nil params do
+    IO.inspect("=============1=============")
+    IO.inspect(1)
+    IO.inspect("=============1=============")
+    
     query
   end
 
   def filter_by_date(query, %{"month" => month}) do
+    IO.inspect("=============2=============")
+    IO.inspect(month)
+    IO.inspect("=============2=============")
+    
     from([q] in query, where: fragment("EXTRACT(MONTH FROM ?)", q.date) == ^month)
   end
 
   def filter_by_date(query, %{"date" => date}) do
+    IO.inspect("=============3=============")
+    IO.inspect(3)
+    IO.inspect("=============3=============")
     from([q] in query, where: q.date == ^date)
   end
 

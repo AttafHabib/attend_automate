@@ -13,6 +13,11 @@ defmodule AppWeb.Utils.Client do
     request_url(:post, url)
   end
 
+  def recognize_faces() do
+    url = "recognize_faces"
+    request_url(:get, url, [timeout: 20000, rec_timeout: 20000])
+  end
+
 #  def get_(params) do
 #    token = params[:authentication_key]
 #    headers = [{"authentication_key", token}]
@@ -51,9 +56,9 @@ defmodule AppWeb.Utils.Client do
 #      {:error, "Invalid query params"}
 #    end
 #  end
-
-  def request_url(:get, url) do
-    case get(url) do
+  def request_url(_, _, options \\ [])
+  def request_url(:get, url, options) do
+    case get(url, [], [timeout: 50_000, recv_timeout: 50_000]) do
 
       {:ok, %HTTPoison.Response{status_code: code, body: body}} when code == 200 ->
         {:ok, body}
@@ -69,8 +74,8 @@ defmodule AppWeb.Utils.Client do
     end
   end
 
-  def request_url(:post, url) do
-    case post(url, []) do
+  def request_url(:post, url, options) do
+    case post(url, options) do
 
       {:ok, %HTTPoison.Response{status_code: code, body: body}} when code == 200 ->
         body
@@ -143,6 +148,7 @@ defmodule AppWeb.Utils.Client do
   defp process_response_body(body) do
     case Jason.decode(body) do
       {:ok, %{"data" => data, "message" => "Image Extracted"}} -> data
+      {:ok, %{"data" => data, "message" => "Faces Recognized"}} -> data
       {:ok, %{"data" => data, "message" => "Error"}} -> {:error, data}
       {:error, %Jason.DecodeError{}} -> {:error, "Decoding Error"}
       body -> body

@@ -2,15 +2,18 @@ import ntpath
 import sys
 import time
 from pathlib import Path
+import shutil
 
 import cv2, numpy, os
 import pickle
 
 from directory_helper import get_uploads_dir, get_path, get_last_dir
-from face_extractor import get_single_face, get_single_face_, align_face
+from face_extractor import get_single_face, get_single_face_, align_face, get_multiple_faces
 from io_helper import save_image
-from label import create_labels
-from recognizer import train, recognize, recognize1
+from label import create_labels, get_images_labels
+from recognizer import train, recognize_face
+
+# from recognizer import train, recognize, recognize2, recognize3, recognize_face
 
 # s_face = "face_recognition_sface_2021dec.onnx"
 
@@ -141,12 +144,21 @@ from recognizer import train, recognize, recognize1
 
 # path = get_uploads_dir()
 # path = 'dataset'
-path = get_uploads_dir()
-train(path)
+# path = get_uploads_dir()
+# train(path)
 # train1(path)
 
-recognize1()
+# recognize()
+# recognize2()
+# recognize3()
+# web_cam = cv2.VideoCapture(0)
+# get_multiple_faces(web_cam)
 #
+# recognized_ids, file_name = recognize_face()
+# path = get_uploads_dir()
+recognize_face()
+# get_images_labels(path)
+# recognize3()
 # url = "http://192.168.1.100:8080/video"
 # web_cam = cv2.VideoCapture(url)
 # faces = get_single_face_(web_cam)

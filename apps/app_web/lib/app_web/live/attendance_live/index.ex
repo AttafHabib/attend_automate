@@ -183,13 +183,80 @@ defmodule AppWeb.AttendanceLive.Index do
 #  end
 
   @impl true
+  def handle_event("update_attendance", %{"_target" => ["auto", "date"], "auto" => %{"date" => date}}=params, socket) do
+    IO.inspect("==========================")
+    IO.inspect(params)
+    IO.inspect("==========================")
+    Process.sleep(2000)
+
+    socket = case AppWeb.Utils.ClientHelper.recognize_faces() do
+      {:ok, %{"file_name" => file_name, "recognized_ids" => user_ids}} ->
+        mark_auto_attendance(user_ids, date, socket)
+        attendance_data = socket.assigns.course_offer
+                          |> get_attendance_data()
+                          |> Enum.map(
+                               fn c_offer -> if("#{c_offer.user_id}" in user_ids) do
+                                               Map.put(c_offer, :attendance, true)
+                                             else
+                                               c_offer
+                                             end
+                               end)
+
+        current_file = App.Context.AttendFiles.get_one(socket.assigns.course_offer.id, date)
+        {:ok, attend_file} = if(current_file) do
+          Context.update(App.Schema.AttendFile, current_file, path: "uploads/#{file_name}")
+        else
+          file_params = %{
+            path: "uploads/#{file_name}",
+            course_offer_id: socket.assigns.course_offer.id,
+            date: date
+          }
+          Context.create(App.Schema.AttendFile, file_params)
+        end
+
+
+        IO.inspect("=============user_ids=============")
+        IO.inspect(user_ids)
+        IO.inspect("=============user_ids=============")
+
+        socket
+        |> assign(c_students: attendance_data)
+        |> assign(attend_file: attend_file)
+      {:error, reason} ->
+        IO.inspect("=============error=============")
+        IO.inspect(reason)
+        IO.inspect("=============error=============")
+        socket
+    end
+
+    IO.inspect("=============socket.assigns.c_studnets=============")
+    IO.inspect(socket.assigns.c_students)
+    IO.inspect("=============socket.assigns.c_studnets=============")
+
+    date_data = socket.assigns.date_data
+                |> Map.put(:selected_date, date)
+
+    if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
+
+    {
+      :noreply,
+      socket
+      |> assign(date_data: date_data)
+    }
+  end
+
+  @impl true
   def handle_event("mark_attendance", %{"type" => "auto"=type}, socket) do
+    date_data = get_date_data(socket.assigns.course_offer)
+
+    if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
 
     {
       :noreply,
       socket
       |> assign(attendance_type: type)
-
+      |> assign(date_data: date_data)
+      |> assign(attend_file: nil)
     }
   end
 
@@ -197,40 +264,33 @@ defmodule AppWeb.AttendanceLive.Index do
   def handle_event("mark_attendance", %{"type" => "manual"=type}, socket) do
     course_offer = socket.assigns.course_offer
 
-    student_dropdown = Enum.map(course_offer.student_courses, fn s_course ->
-      student = s_course.student
-      %{
-        id: student.id,
-        student_name: Enum.join([student.first_name, student.last_name], " "),
-        roll_no: student.roll_no,
-        attendance: false,
-        attend_dropdown: [{"Absent", s_course.id}, {"Present", s_course.id}],
-        student_course_id: s_course.id
-      }
-    end)
+    attendance_data = get_attendance_data(course_offer)
 
-    {:ok, today} = "Etc/UTC" |> DateTime.now()
-    today = today |> DateTime.to_date()
+#    student_dropdown = Enum.map(course_offer.student_courses, fn s_course ->
+#      student = s_course.student
+#      %{
+#        id: student.id,
+#        student_name: Enum.join([student.first_name, student.last_name], " "),
+#        roll_no: student.roll_no,
+#        attendance: false,
+#        attend_dropdown: [{"Absent", s_course.id}, {"Present", s_course.id}],
+#        student_course_id: s_course.id,
+#        force_update: "#{student.id }" <> (DateTime.utc_now |> DateTime.to_unix |> to_string) #Temp Fix, Not re rendered(class not updated). Will investigate late.
+#      }
+#    end)
 
-    date_compare = today |> Date.compare(socket.assigns.course_offer.end_date)
-    max_date = (date_compare == :lt) && today || course_offer.end_date #Shouldn't allow future dates
+    date_data = get_date_data(course_offer)
 
-    date_data = %{
-      excluded_dates: Date.range(course_offer.start_date, max_date) |> Enum.flat_map(&((Date.day_of_week(&1) in [6, 7]) && [Date.to_string(&1)] || [])),
-      min_date: course_offer.start_date,
-      max_date: max_date,
-      selected_date: nil
-    }
-
-    if connected?(socket), do: Process.send_after(self(), "display_modals", 50)
+    if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
 #    if connected?(socket), do: Process.send_after(self(), "setup_dates", 1)
 
     {
       :noreply,
       socket
       |> assign(attendance_type: type)
-      |> assign(c_students: student_dropdown)
+      |> assign(c_students: attendance_data)
       |> assign(date_data: date_data)
+      |> assign(attend_file: nil)
     }
   end
 
@@ -255,9 +315,13 @@ defmodule AppWeb.AttendanceLive.Index do
               date: date
             }
           )
+          force_update = "#{std.id }" <> (DateTime.utc_now |> DateTime.to_unix |> to_string) #Temp Fix, Not re rendered(class not updated). Will investigate late.
+          std
+          |> Map.put(:force_update, force_update)
+          |> Map.put(:attendance, false)
+
         end
       )
-      socket.assigns.c_students
     else
     
       socket.assigns.course_offer.id
@@ -272,67 +336,59 @@ defmodule AppWeb.AttendanceLive.Index do
                roll_no: student.roll_no,
                attendance: atd.status,
                attend_dropdown: [{"Absent", "#{s_c.id}_a"}, {"Present", "#{s_c.id}_p"}],
-               student_course_id: s_c.id
+               student_course_id: s_c.id,
+               force_update: "#{student.id }" <> (DateTime.utc_now |> DateTime.to_unix |> to_string) #Temp Fix, Not re rendered(class not updated). Will investigate late.
              }
            end
          )
     end
+
+    attend_file = App.Context.AttendFiles.get_one(socket.assigns.course_offer.id, date)
+
     if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
 
     {:noreply,
       socket
       |> assign(date_data: date_data)
       |> assign(c_students: c_students)
+      |> assign(attend_file: attend_file)
     }
   end
   
   @impl true
-  def handle_event("update_attendance", %{"_target" => ["status"], "status" => id}=params, socket) do
-    [id, _] = String.split(id, "_")
-
-    IO.inspect("=============id=============")
-    IO.inspect(params)
-    IO.inspect("=============id=============")
+  def handle_event("update_attendance", %{"_target" => [("s_course_" <> id) = p]}=params, socket) do
+    [id, status] = params
+                   |> Map.get(p)
+                   |> String.split("_")
+    status = (status == "p")
     date = socket.assigns.date_data[:selected_date]
 
     attendance = Attendances.get_by_s_course(id, %{"date" => date}) |> List.first
 
-    IO.inspect("=============attendance=============")
-    IO.inspect(attendance)
-    IO.inspect("=============attendance=============")
-
-    c_students = case Attendances.update_attendance(attendance, %{status: !attendance.status}) do
+    c_students = case Attendances.update_attendance(attendance, %{status: status}) do
       {:ok, attendance} ->
         Enum.map(
           socket.assigns.c_students,
           fn std ->
             if (std.student_course_id == attendance.student_course_id) do
-              Map.put(std, :attendance, attendance.status)
+              force_update = DateTime.utc_now
+                             |> DateTime.to_unix
+                             |> to_string #Temp Fix, Not re rendered(class not updated). Will investigate late.
+              std
+              |> Map.put(:attendance, attendance.status)
+              |> Map.put(:force_update, "#{std.id }" <> force_update)
             else
               std
             end
           end
         )
 
-
-#        socket.assigns.course_offer.id
-#                           |> StudentCourses.get_student_course_preloads(%{"date" => date})
-#                           |> Enum.map(
-#                                fn s_c ->
-#                                  student = s_c.student
-#                                  atd = List.first(s_c.attendances)
-#                                  %{
-#                                    id: student.id,
-#                                    student_name: Enum.join([student.first_name, student.last_name], " "),
-#                                    roll_no: student.roll_no,
-#                                    attendance: atd.status,
-#                                    attend_dropdown: [{"Absent", s_c.id}, {"Present", s_c.id}],
-#                                    student_course_id: s_c.id
-#                                  }
-#                                end
-#                              )
       {:error, _} -> socket.assigns.c_students
     end
+
+    IO.inspect("=============c_students=============")
+    IO.inspect(c_students)
+    IO.inspect("=============c_students=============")
 
     if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
 
@@ -350,6 +406,10 @@ defmodule AppWeb.AttendanceLive.Index do
       :noreply,
       socket
       |> assign(:modal, modal)
+      |> assign(:attend_file, nil)
+      |> assign(:c_students, nil)
+      |> assign(:attendance_type, nil)
+      |> assign(:date_data, nil)
     }
   end
 
@@ -431,11 +491,12 @@ defmodule AppWeb.AttendanceLive.Index do
   def map_attendances(c_offer, filter_params) do
     s_course_ids = filter_params[:student]
     month = filter_params[:month]
+    params =  month && %{"month" => month}
 
     start_date = get_date(c_offer.start_date)
     end_date = get_date(c_offer.end_date)
 
-    attendances = Attendances.get_by_s_course(s_course_ids, %{"month" => month})
+    attendances = Attendances.get_by_s_course(s_course_ids, params)
 
     attend = Enum.frequencies_by(attendances, &(&1.status && "Present" || "Absent"))
 
@@ -460,5 +521,90 @@ defmodule AppWeb.AttendanceLive.Index do
     {year, month} = {date.year, date.month}
     month = if(month < 10) do "0" <> "#{month}" else month end
     "#{year}-#{month}"
+  end
+
+  def get_date_data(%App.Schema.CourseOffer{} = course_offer) do
+    course_offer = course_offer
+
+    {:ok, today} = "Etc/UTC" |> DateTime.now()
+    today = today |> DateTime.to_date()
+
+    date_compare = today |> Date.compare(course_offer.end_date)
+    max_date = (date_compare == :lt) && today || course_offer.end_date #Shouldn't allow future dates
+
+    %{
+      excluded_dates: Date.range(course_offer.start_date, max_date) |> Enum.flat_map(&((Date.day_of_week(&1) in [6, 7]) && [Date.to_string(&1)] || [])),
+      min_date: course_offer.start_date,
+      max_date: max_date,
+      selected_date: nil
+    }
+  end
+
+  def mark_auto_attendance(user_ids, date, socket) do
+    s_courses = user_ids
+                |> StudentCourses.get_by_user_ids(socket.assigns.course_offer.id)
+
+    filtered_s_courses = user_ids
+                       |> StudentCourses.filter_by_user_ids(socket.assigns.course_offer.id)
+
+    attendances = s_courses
+                  |> Enum.map(&(&1.id))
+                  |> Attendances.get_by_s_course(%{"date" => date})
+
+    if(length(attendances) == 0) do
+      Enum.map(
+        s_courses,
+        fn s_c ->
+          attr = %{
+            student_course_id: s_c.id,
+            status: true,
+            date: date
+          }
+          Attendances.create_attendance(attr)
+        end
+      )
+      Enum.map(
+        filtered_s_courses,
+        fn s_c ->
+          attr = %{
+            student_course_id: s_c.id,
+            status: false,
+            date: date
+          }
+          Attendances.create_attendance(attr)
+        end
+      )
+      else
+      Enum.map(
+        s_courses,
+        fn s_c ->
+          attr = %{
+            student_course_id: s_c.id,
+            status: true,
+            date: date
+          }
+
+          attendances
+          |> Enum.find(&(&1.student_course_id == s_c.id))
+          |> Attendances.update_attendance(attr)
+        end
+      )
+    end
+  end
+
+  def get_attendance_data(%App.Schema.CourseOffer{}=course_offer) do
+    Enum.map(course_offer.student_courses, fn s_course ->
+      student = s_course.student
+      %{
+        id: student.id,
+        user_id: student.user_id,
+        student_name: Enum.join([student.first_name, student.last_name], " "),
+        roll_no: student.roll_no,
+        attendance: false,
+        attend_dropdown: [{"Absent", s_course.id}, {"Present", s_course.id}],
+        student_course_id: s_course.id,
+        force_update: "#{student.id }" <> (DateTime.utc_now |> DateTime.to_unix |> to_string) #Temp Fix, Not re rendered(class not updated). Will investigate late.
+      }
+    end)
   end
 end

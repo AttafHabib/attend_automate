@@ -9,4 +9,8 @@ defmodule AppWeb.Utils.ClientHelper do
     Client.train_model()
   end
 
+  def recognize_faces() do
+    Client.recognize_faces()
+  end
+
 end

@@ -123,6 +123,10 @@ defmodule App.Context.Students do
 #    |> Repo.update
 #  end
 
+  def get_by_user_id(user_ids) when is_list user_ids do
+    from(s in Student, where: s.user_id in ^user_ids)|> Repo.one
+  end
+
   def get_by_user_id(user_id) do
     from(s in Student, where: s.user_id == ^user_id)|> Repo.one
   end
