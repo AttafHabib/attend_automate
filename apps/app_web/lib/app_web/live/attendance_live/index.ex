@@ -204,7 +204,11 @@ defmodule AppWeb.AttendanceLive.Index do
 
         current_file = App.Context.AttendFiles.get_one(socket.assigns.course_offer.id, date)
         {:ok, attend_file} = if(current_file) do
-          Context.update(App.Schema.AttendFile, current_file, path: "uploads/#{file_name}")
+          IO.inspect("=============current_file=============")
+          IO.inspect(file_name)
+          IO.inspect(current_file)
+          IO.inspect("=============current_file=============")
+          Context.update(App.Schema.AttendFile, current_file, %{path: "uploads/#{file_name}"})
         else
           file_params = %{
             path: "uploads/#{file_name}",
