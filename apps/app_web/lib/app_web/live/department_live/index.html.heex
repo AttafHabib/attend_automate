@@ -7,10 +7,9 @@
             <a href="#" phx-click="search_bar" phx-value-bar="departments" class="btn sbtn">
                 <i class="fa fa-search fa-sm"></i>
             </a>
-            <%= text_input f, :search, class: "form-control #{assigns[:search_bar] && "active"}", name: "value", autofocus: false %>
+            <%= text_input f, :search, class: "form-control #{assigns[:search_bar] && "active"}", name: "value", value: assigns[:search_value], autofocus: false %>
             </.form>
             </div>
-            <a href="#" phx-click="filter_btn" phx-value-btn="department" class="btn sbtn"><i class="fa fa-filter"></i></a>
             <button class="btn sbtn" style="width: unset" phx-click="open_modals" phx-value-modal="add_dpt">
             <i class="fa fa-plus pr-3"></i>
             Department

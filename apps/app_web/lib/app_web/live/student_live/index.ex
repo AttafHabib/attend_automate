@@ -13,6 +13,7 @@ defmodule AppWeb.StudentLive.Index do
                                           socket
                                           |> assign(user: user)
                                           |> assign(students: students)
+                                          |> assign(all_students: students)
                                         }
                        _ -> {:ok, push_redirect(socket, to: "/dashboard")}
                      end
@@ -24,10 +25,18 @@ defmodule AppWeb.StudentLive.Index do
 
   @impl true
   def handle_event("search_bar", _, socket) do
+    socket = if(socket.assigns[:search_bar]) do
+      socket
+      |> assign(students: socket.assigns.all_students)
+      |> assign(search_value: "")
+    else
+      socket
+    end
+
     {
       :noreply,
       socket
-      |> assign(:search_bar, !socket.assigns[:search_bar])
+      |> assign(search_bar: !socket.assigns[:search_bar])
     }
   end
 
@@ -51,12 +60,33 @@ defmodule AppWeb.StudentLive.Index do
   end
 
   @impl true
+  def handle_event("search", %{"value" => value}, socket) do
+    students = Enum.filter(
+      socket.assigns.all_students,
+      fn student ->
+        String.contains?(
+          String.downcase(student.first_name) <> " " <> String.downcase(student.last_name),
+          String.downcase(value)
+        )
+      end
+    )
+
+
+    {
+      :noreply,
+      socket
+      |> assign(students: students)
+      |> assign(search_value: value)
+    }
+  end
+
+  @impl true
   def handle_event("validate", %{"_target" => ["student", "department_id"], "student" => %{"department_id" => ""}}, socket)   do
     if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
     {
       :noreply,
       socket
-      |> assign(:course_dropdown, nil)
+      |> assign(course_dropdown: nil)
     }
   end
   
@@ -69,16 +99,12 @@ defmodule AppWeb.StudentLive.Index do
     {
       :noreply,
       socket
-      |> assign(:course_dropdown, course_dropdown)
+      |> assign(course_dropdown: course_dropdown)
     }
   end
   
   @impl true
   def handle_event("save", %{"student" => params}, socket) do
-    IO.inspect("=============params=============")
-    IO.inspect(params)
-    IO.inspect("=============params=============")
-
     l_student = Context.get_last(Student)
     roll_no = l_student && (String.to_integer(l_student.roll_no) + 1) || 1
 
@@ -106,7 +132,7 @@ defmodule AppWeb.StudentLive.Index do
 
                         {:noreply,
                           socket
-                          |> assign(:students, students)
+                          |> assign(students: students)
                         }
       {:error, changeset} ->
         IO.inspect("=============changeset=============")

@@ -10,16 +10,25 @@ defmodule AppWeb.TeacherLive.Index do
 
     {:ok,
       socket
-      |> assign(:teachers, teachers)
+      |> assign(teachers: teachers)
+      |> assign(all_teachers: teachers)
     }
   end
 
   @impl true
   def handle_event("search_bar", _, socket) do
+    socket = if(socket.assigns[:search_bar]) do
+      socket
+      |> assign(teachers: socket.assigns.all_teachers)
+      |> assign(search_value: "")
+    else
+      socket
+    end
+
     {
       :noreply,
       socket
-      |> assign(:search_bar, !socket.assigns[:search_bar])
+      |> assign(search_bar: !socket.assigns[:search_bar])
     }
   end
 
@@ -37,10 +46,10 @@ defmodule AppWeb.TeacherLive.Index do
     {
       :noreply,
       socket
-      |> assign(:modal, modal)
-      |> assign(:changeset_teacher, changeset_teacher)
-      |> assign(:dpt_dropdown, dpt_dropdown)
-      |> assign(:cour_dropdown, cour_dropdown)
+      |> assign(modal: modal)
+      |> assign(changeset_teacher: changeset_teacher)
+      |> assign(dpt_dropdown: dpt_dropdown)
+      |> assign(cour_dropdown: cour_dropdown)
     }
   end
 
@@ -51,6 +60,26 @@ defmodule AppWeb.TeacherLive.Index do
     {
       :noreply,
       socket
+    }
+  end
+
+  @impl true
+  def handle_event("search", %{"value" => value}, socket) do
+    teachers = Enum.filter(
+      socket.assigns.all_teachers,
+      fn teacher ->
+        String.contains?(
+          String.downcase(teacher.first_name) <> " " <> String.downcase(teacher.last_name),
+          String.downcase(value)
+        )
+      end
+    )
+
+    {
+      :noreply,
+      socket
+      |> assign(teachers: teachers)
+      |> assign(search_value: value)
     }
   end
 

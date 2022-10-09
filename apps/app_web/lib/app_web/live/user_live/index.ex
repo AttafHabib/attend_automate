@@ -14,17 +14,44 @@ defmodule AppWeb.UserLive.Index do
 
     {:ok,
       socket
-      |> assign(:users, users)
+      |> assign(users: users)
+      |> assign(all_users: users)
+    }
+  end
+
+  @impl true
+  def handle_event("search", %{"value" => value}, socket) do
+    users = Enum.filter(
+      socket.assigns.all_users,
+      fn user ->
+        user.username
+        |> String.downcase()
+        |> String.contains?(value)
+      end
+    )
+
+    {
+      :noreply,
+      socket
+      |> assign(search_value: value)
+      |> assign(users: users)
     }
   end
 
   @impl true
   def handle_event("search_bar", _, socket) do
+    socket = if(socket.assigns[:search_bar]) do
+      socket
+      |> assign(users: socket.assigns.all_users)
+      |> assign(search_value: "")
+    else
+      socket
+    end
 
     {
       :noreply,
       socket
-      |> assign(:search_bar, !socket.assigns[:search_bar])
+      |> assign(search_bar: !socket.assigns[:search_bar])
     }
   end
 
@@ -33,10 +60,6 @@ defmodule AppWeb.UserLive.Index do
     changes = socket.assigns.changeset_user.changes |> Map.put(:email, email)
     changeset_user = Context.change(User, %User{}, changes) |> Map.put(:action, :validate)
 
-    IO.inspect("=============changeset_user=============")
-    IO.inspect(changeset_user)
-    IO.inspect("=============changeset_user=============")
-    
     if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
 
 
@@ -53,19 +76,19 @@ defmodule AppWeb.UserLive.Index do
     dropdown_profile = case role do
       "admin" -> []
       "teacher" -> Teachers.list_teachers(false) |> Enum.map(&({&1.first_name <> " " <> &1.last_name, &1.id}))
-      "student" -> Students.list_students(false) |> Enum.map(&({&1.first_name <> " " <> &1.last_name, &1.id}))
+      "student" -> Students.list_stdents(false) |> Enum.map(&({&1.first_name <> " " <> &1.last_name, &1.id}))
     end
 
     if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
 
     {:noreply,
       socket
-      |> assign(:role, role)
-      |> assign(:dropdown_profile, dropdown_profile)
-      |> assign(:changeset_user, Context.change(User, %User{}))
-      |> assign(:u_password, nil)
-      |> assign(:selected_prof, nil)
-      |> assign(:show_password, nil)
+      |> assign(role: role)
+      |> assign(dropdown_profile: dropdown_profile)
+      |> assign(changeset_user: Context.change(User, %User{}))
+      |> assign(u_password: nil)
+      |> assign(selected_prof: nil)
+      |> assign(show_password: nil)
 
     }
   end
@@ -96,9 +119,9 @@ defmodule AppWeb.UserLive.Index do
 
     {:noreply,
       socket
-      |> assign(:changeset_user, changeset_user)
-      |> assign(:u_password, params[:password])
-      |> assign(:selected_prof, s_profile)
+      |> assign(changeset_user: changeset_user)
+      |> assign(u_password: params[:password])
+      |> assign(selected_prof: s_profile)
     }
   end
 
@@ -168,7 +191,7 @@ defmodule AppWeb.UserLive.Index do
 
                      if connected?(socket), do: Process.send_after(self(), "close_modals", 300)
 
-                     {:noreply, assign(socket, :users, users)}
+                     {:noreply, assign(socket, users: users)}
       {:error, changeset} -> IO.inspect("=============changeset=============")
                              IO.inspect(changeset)
                              IO.inspect("=============changeset=============")
@@ -215,14 +238,14 @@ defmodule AppWeb.UserLive.Index do
     {
       :noreply,
       socket
-      |> assign(:modal, modal)
-      |> assign(:changeset_user, changeset_user)
-#      |> assign(:roles, roles)
-      |> assign(:u_password, nil)
-      |> assign(:selected_prof, nil)
-      |> assign(:show_password, nil)
-      |> assign(:role, "admin")
-#      |> assign(:profiles, [])
+      |> assign(modal: modal)
+      |> assign(changeset_user: changeset_user)
+#      |> assign(roles: roles)
+      |> assign(u_password: nil)
+      |> assign(selected_prof: nil)
+      |> assign(show_password: nil)
+      |> assign(role: "admin")
+#      |> assign(profiles: [])
     }
   end
 

@@ -13,35 +13,47 @@ defmodule AppWeb.DepartmentLive.Index do
       :ok,
       socket
       |> assign(:departments, departments)
+      |> assign(:all_departments, departments)
     }
   end
 
   @impl true
   def handle_event("search_bar", _, socket) do
+    socket = if(socket.assigns[:search_bar]) do
+      socket
+      |> assign(departments: socket.assigns.departments)
+      |> assign(search_value: "")
+    else
+      socket
+    end
+
     {
       :noreply,
       socket
-      |> assign(:search_bar, !socket.assigns[:search_bar])
+      |> assign(search_bar: !socket.assigns[:search_bar])
     }
   end
 
   @impl true
-  def handle_event("search", %{"value" => search_string} = params, socket) do
-    IO.inspect("=============params=============")
-    IO.inspect(params)
-    IO.inspect("=============params=============")
+  def handle_event("search", %{"value" => value}, socket) do
+    departments = Enum.filter(
+      socket.assigns.all_departments,
+      fn department ->
+        department.name
+        |> String.downcase()
+        |> String.contains?(value)
+      end
+    )
     {
       :noreply,
       socket
+      |> assign(departments: departments)
+      |> assign(search_value: value)
     }
   end
 
   @impl true
   def handle_event("save", %{"department" => params}, socket) do
-    IO.inspect("=============params=============")
-    IO.inspect(params)
-    IO.inspect("=============params=============")
-
     case Context.create(Department, params) do
       {:ok, dpt} ->
         if connected?(socket), do: Process.send_after(self(), "close_modals", 300)

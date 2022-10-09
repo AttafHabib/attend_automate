@@ -30,6 +30,14 @@ defmodule AppWeb.CourseLive.Index do
 
   @impl true
   def handle_event("search_bar", _, socket) do
+    socket = if(socket.assigns[:search_bar]) do
+      socket
+      |> assign(courses: socket.assigns.all_courses)
+      |> assign(search_value: "")
+    else
+      socket
+    end
+
     {
       :noreply,
       socket
@@ -38,17 +46,18 @@ defmodule AppWeb.CourseLive.Index do
   end
 
   @impl true
-  def handle_event("search", %{"value" => search_string} = params, socket) do
+  def handle_event("search", %{"value" => value} = params, socket) do
     courses = Enum.filter(socket.assigns.all_courses, fn course ->
       course.name
       |> String.downcase()
-      |> String.contains?(String.downcase(search_string))
+      |> String.contains?(String.downcase(value))
     end)
 
     {
       :noreply,
       socket
       |> assign(courses: courses)
+      |> assign(search_value: value)
     }
   end
 
@@ -62,7 +71,7 @@ defmodule AppWeb.CourseLive.Index do
         {
           :noreply,
           socket
-          |> assign(:courses, courses)
+          |> assign(courses: courses)
         }
       {:error, changeset_} -> {:noreply, socket}
 
@@ -88,9 +97,9 @@ defmodule AppWeb.CourseLive.Index do
     {
       :noreply,
       socket
-      |> assign(:modal, modal)
-      |> assign(:changeset_course, changeset_course)
-      |> assign(:dpt_dropdown, dpt_dropdown)
+      |> assign(modal: modal)
+      |> assign(changeset_course: changeset_course)
+      |> assign(dpt_dropdown: dpt_dropdown)
     }
   end
 
@@ -136,9 +145,6 @@ defmodule AppWeb.CourseLive.Index do
                                      courses=  Courses.get_by_teacher_id(teacher.id)
                                                |> Enum.map(fn course ->
                                                   c_offers = App.Context.CourseOffers.get_by_course(course.id)
-                                                  IO.inspect("=============c_offers=============")
-                                                  IO.inspect(c_offers)
-                                                  IO.inspect("=============c_offers=============")
                                                   Map.put(course, :students, c_offers.student_courses)
                                                 end)
       user.user_role.role_id == 2 -> student = Students.get_by_user_id(user.id)

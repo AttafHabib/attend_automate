@@ -2,13 +2,12 @@
     <h2 class="text-left">Users</h2>
     <div class="flexSect">
         <div class="flexInSect"  style="flex-grow: unset">
-            <a href="#" phx-click="filter_btn" phx-value-btn="report" class="btn sbtn"><i class="fa fa-filter"></i></a>
             <div class={"searchexp #{assigns[:search_bar] && "active"}"}>
                 <.form let={f} for={:foo} phx-change="search" phx-submit="search">
                 <a href="#" phx-click="search_bar" phx-value-bar="users" class="btn sbtn">
                     <i class="fa fa-search fa-sm"></i>
                 </a>
-                <%= text_input f, :search, class: "form-control #{assigns[:search_bar] && "active"}", name: "value", autofocus: false %>
+                <%= text_input f, :search, class: "form-control #{assigns[:search_bar] && "active"}", name: "value", value: assigns[:search_value], autofocus: false %>
                 </.form>
             </div>
             <button class="btn sbtn" style="width: unset" phx-click="open_modals" phx-value-modal="add_user">

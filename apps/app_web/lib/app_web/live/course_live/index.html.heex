@@ -7,7 +7,7 @@
             <a href="#" phx-click="search_bar" phx-value-bar="departments" class="btn sbtn">
                 <i class="fa fa-search fa-sm"></i>
             </a>
-            <%= text_input f, :search, class: "form-control #{assigns[:search_bar] && "active"}", name: "value", autofocus: false %>
+            <%= text_input f, :search, class: "form-control #{assigns[:search_bar] && "active"}", name: "value", value: assigns[:search_value], autofocus: false %>
         </.form>
     </div>
     <%= if @user.user_role.role_id in [1] do %>
