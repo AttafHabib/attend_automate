@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+        <%= form_for @changeset, Routes.user_path(@conn, :update, @token, @user), fn f -> %>
+        <div class="form-group">
+            <label>
+                Set Password: <%= password_input f, :password, class: "form-control" %>
+                <%= error_tag f, :password %>
+            </label>
+
+            <label>
+                Verify Password: <%= password_input f, :confirm_password, class: "form-control" %>
+                <%= error_tag f, :confirm_password %>
+            </label>
+            <%= if assigns[:error_msg] do %>
+                <div style="color: red">
+                   <%= assigns[:error_msg] %>
+                </div>
+            <% end %>
+
+            <div class="form-group">
+                <%= submit "Submit", class: "dbtn btn float-none" %>
+            </div>
+        </div>
+        <% end %>
+    </div>
+</div>

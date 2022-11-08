@@ -16,10 +16,46 @@ defmodule AppWeb.AttendanceLive.Index do
           |> assign(filter_params: %{})
             #          |> assign(tab_action: "report")
           |> load_role()
+          |> assign_action()
         }
 
       {:error, reason} ->
         {:ok, push_redirect(socket, to: "/login")}
+    end
+  end
+
+  def assign_action(socket) do
+    case socket.assigns.user.user_role.id do
+      3 ->
+        t_course = List.first(socket.assigns.teacher.course_offers)
+        course_offer = CourseOffers.get_by_course(t_course.id)
+                       |> Context.preload_selective([student_courses: :student])
+        student_dropdown = Enum.map(course_offer.student_courses, fn s_course ->
+          student = s_course.student
+          {"#{student.first_name} #{student.last_name} - #{student.roll_no}", s_course.id}
+        end)
+
+        socket
+        |> assign(student_dropdown: student_dropdown)
+        |> assign(course_offer: course_offer)
+        |> assign(attendance_data: %{})
+        |> assign(show_attendance: false)
+        |> assign(filter_params: %{})
+        |> assign(tab_action: t_course.name)
+        |> assign(action_id: t_course.id)
+      2 ->
+        s_course = List.first(socket.assigns.student.s_courses)
+        filter_params = Map.put(socket.assigns.filter_params, :student, s_course.id)
+        attendance_data = CourseOffers.get_by_s_course_id(s_course.id)
+                          |> map_attendances(filter_params)
+
+        socket
+        |> assign(attendance_data: attendance_data)
+        |> assign(filter_params: filter_params)
+        |> assign(show_attendance: true)
+        |> assign(tab_action: s_course.course_offer.course.name)
+        |> assign(action_id: s_course.id)
+      _ -> socket
     end
   end
 

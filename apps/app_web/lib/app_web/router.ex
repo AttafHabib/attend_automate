@@ -30,7 +30,14 @@ defmodule AppWeb.Router do
     pipe_through [:browser, :login]
 
     post "/login", SessionController, :login
+    post "/forget_password", SessionController, :reset
+    get "/users/:token/edit", UserController, :edit
+    put "/users/:token/:id", UserController, :update
+    patch "/users/:token/:id", UserController, :update
+
   end
+
+  forward "/sent_emails", Bamboo.SentEmailViewerPlug
 
   scope "/", AppWeb do
     pipe_through [:browser, :auth, :login]

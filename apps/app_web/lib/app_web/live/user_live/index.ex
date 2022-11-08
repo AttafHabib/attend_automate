@@ -76,7 +76,7 @@ defmodule AppWeb.UserLive.Index do
     dropdown_profile = case role do
       "admin" -> []
       "teacher" -> Teachers.list_teachers(false) |> Enum.map(&({&1.first_name <> " " <> &1.last_name, &1.id}))
-      "student" -> Students.list_stdents(false) |> Enum.map(&({&1.first_name <> " " <> &1.last_name, &1.id}))
+      "student" -> Students.list_students(false) |> Enum.map(&({&1.first_name <> " " <> &1.last_name, &1.id}))
     end
 
     if connected?(socket), do: Process.send_after(self(), "display_modals", 1)
@@ -199,7 +199,7 @@ defmodule AppWeb.UserLive.Index do
                              {:noreply, socket}
     end
   end
-  
+
   @impl true
   def handle_event("save", %{"user" => params}, socket) do
     case Context.create(User, params) do

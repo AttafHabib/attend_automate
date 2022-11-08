@@ -8,11 +8,11 @@ from label import get_random_string
 
 def save_image(image, user_id, user_name):
     path = get_path(user_id)
-    # new_img_no = (int)(get_last_dir(path)) + 1
-    # cv2.imwrite('%s/%s_%s.png' % (path, user_name, new_img_no), image)
-    cv2.imwrite('%s/%s.png' % (path, user_name), image)
-    # return '%s_%s.png' % (user_name, new_img_no)
-    return '%s.png' % (user_name)
+    new_img_no = (int)(get_last_dir(path)) + 1
+    cv2.imwrite('%s/%s_%s.png' % (path, user_name, new_img_no), image)
+    # cv2.imwrite('%s/%s.png' % (path, user_name), image)
+    return '%s_%s.png' % (user_name, new_img_no)
+    # return '%s.png' % (user_name)
 
 
 def save_rect_image(image, user_id):

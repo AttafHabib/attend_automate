@@ -38,6 +38,12 @@ config :app, App.Guardian,
   issuer: "app",
   secret_key: System.get_env("GUARDIAN_SECRET_KEY")
 
+config :app, App.Mailer,
+  adapter: Bamboo.MandrillAdapter,
+  api_key: System.get_env("MAILER_KEY"),
+  email_base_url: System.get_env("EMAIL_BASE_URL"),
+  username: System.get_env("MAILER_USERNAME")
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

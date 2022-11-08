@@ -9,7 +9,7 @@ defmodule AppWeb.MixProject do
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
-      elixir: "~> 1.13.2",
+      elixir: "~> 1.13.4",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -52,7 +52,8 @@ defmodule AppWeb.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:httpoison, "~> 1.8.0"},
-      {:contex, "~> 0.4.0"}
+      {:contex, "~> 0.4.0"},
+      {:bamboo, "~> 1.1"}
 #      {:poison, "~> 3.0"},
 #      {:chartkick, "~> 0.4.0"}
     ]

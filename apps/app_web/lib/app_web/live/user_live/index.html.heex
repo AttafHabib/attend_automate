@@ -69,7 +69,6 @@
                     <span class="close" phx-click="close_modals" data-dismiss="modal">&times;</span>
                     <h4 class="text-center" style="color: #812E23">Create User</h4>
                     <.form let={f} for={assigns[:changeset_user]} phx-submit="save">
-
                     <div class="form-group row justify-content-around">
                         <div class="custom-control custom-checkbox">
                             <%= checkbox :f, :role, class: "custom-control-input", checked: @role == "admin", phx_change: "validate", id: "role_admin",  name: "user[role][admin]" %>

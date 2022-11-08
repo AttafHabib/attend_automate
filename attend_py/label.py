@@ -20,7 +20,6 @@ def create_labels(path):
                 images.append(img)
                 labels.append(int(subdir))
             id += 1
-    # (im_width, im_height) = (112, 92)
 
     # Create a Numpy array from the two lists above
     (images, labels) = [numpy.array(lis) for lis in [images, labels]]
@@ -39,7 +38,6 @@ def get_images_labels(path):
                 name_list = name.split('_')
                 file_path = os.path.join(file_dir_path, filename)
                 name = str(subdir) + '-' + name_list[0]
-
                 # labels.append((name, ))
                 # print(os.path.splitext(filename)[0])
                 # print(file_path)
@@ -52,7 +50,7 @@ def get_encoding_labels(labels):
     (known_enc, known_labels) = ([], [])
     for (path, name) in labels:
         image = face_recognition.load_image_file(path)
-        image_enc = face_recognition.face_encodings(image)[0]
+        image_enc = face_recognition.face_encodings(image, known_face_locations=None, num_jitters=1, model="small")[0]
         known_enc.append(image_enc)
         known_labels.append(name)
     return known_enc, known_labels

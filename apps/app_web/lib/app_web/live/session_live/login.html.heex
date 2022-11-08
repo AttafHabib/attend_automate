@@ -4,6 +4,35 @@
         <div class="col-lg-6 col-md-6 col-sm-12 col-12 my-auto  order-lg-2 order-md-2 order-sm-1 order-1">
             <div class="formbox">
 
+                <%= if assigns[:toggle_forget_pass] do %>
+                    <p>We will send you an email with instructions on how to reset your password.</p>
+                    <%= if assigns[:show_message] do %>
+                    <div class="form-group">
+                        <p><%= assigns[:show_message] %></p>
+                    </div>
+                    <% else %>
+                    <.form let={f} for={:foo} phx-submit="reset_password">
+                        <div class="form-group">
+                            <%= label f, :email %>
+                            <%= text_input f, :email, class: "form-control", name: "email" %>
+                            <%= error_tag f, :email %>
+                            <%= if assigns[:error_message] do %>
+                                <div class="custom_error"><%= assigns[:error_message] %></div>
+                            <% end %>
+                        </div>
+                        <div class="form-group">
+                            <div class="row m-0">
+                                <div class="col-6 px-0">
+                                    <button class="dbtn btn float-none" phx-click="forget_password"><%= gettext("Back to Login") %></button>
+                                </div>
+                                <div class="col-6 px-0 d-flex justify-content-end">
+                                    <button class="dbtn btn float-none" type="submit"><%= gettext("Send Email") %></button>
+                                </div>
+                            </div>
+                        </div>
+                    </.form>
+                    <% end %>
+                <% else %>
                 <h3><%= gettext("Welcome") %></h3>
                 <%= f = form_for @changeset, Routes.session_path(@socket, :login), fn f -> %>
 
@@ -17,10 +46,17 @@
                     <%= password_input f, :password, class: "form-control" %>
                     <%= error_tag f, :password %>
                 </div>
-                <div class="form-group custom float-right">
-                    <button class="dbtn btn" type="submit"><%= gettext("Login") %></button>
-                    <p><a href="#" phx-click="forget_password"><%= gettext("forgot password") %></a></p>
+                <div class="form-group">
+                    <div class="row m-0">
+                        <div class="col-6 px-0">
+                            <p><a href="#" phx-click="forget_password"><%= gettext("forgot password") %></a></p>
+                        </div>
+                        <div class="col-6 px-0 d-flex justify-content-end">
+                            <button class="dbtn btn float-none" type="submit"><%= gettext("Login") %></button>
+                        </div>
+                    </div>
                 </div>
+                <% end %>
                 <% end %>
             </div>
         </div>

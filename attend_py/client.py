@@ -6,7 +6,7 @@ from flask import Flask, send_file, Response, make_response
 from directory_helper import get_uploads_dir
 from face_extractor import get_single_face
 from io_helper import save_image, save_rect_image
-from recognizer import train, recognize_face
+from recognizer import recognize_face
 
 app = Flask(__name__)
 
@@ -41,8 +41,8 @@ def get_user_face(id, user_name):
 
 @app.route("/train_model", methods=['POST'])
 def train_model():
-    path = get_uploads_dir()
-    train(path)
+    # path = get_uploads_dir()
+    # train(path)
     response = make_response({}, 200)
     response.headers['Content-Type'] = 'application/json'
 
