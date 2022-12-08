@@ -7,6 +7,7 @@ To start your Phoenix server:
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.setup`
   * Run seeds with `mix run apps/app/priv/repo/seeds.exs`
+  * Get enviroment variables with `source .env`
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
   
 To start your Flask server:
