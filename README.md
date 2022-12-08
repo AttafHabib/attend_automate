@@ -12,7 +12,7 @@ To start your Phoenix server:
   
 To start your Flask server:
   
-  $ flask --app client.py run
+  `$ flask --app client.py run`
   
   inside the attend_py directory
 
