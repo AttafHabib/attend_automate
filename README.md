@@ -12,9 +12,7 @@ To start your Phoenix server:
   
 To start your Flask server:
   
-  `$ flask --app client.py run`
-  
-  inside the attend_py directory
+  `$ flask --app client.py run` inside the attend_py directory
 
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
