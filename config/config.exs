@@ -20,6 +20,7 @@ config :app_web,
 # Configures the endpoint
 config :app_web, AppWeb.Endpoint,
   url: [host: "localhost"],
+  check_origin: ["localhost", "http://www.attend_automate.attaf.tech"],
   render_errors: [view: AppWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: App.PubSub,
   live_view: [signing_salt: "dVh8UFAh"]

@@ -13,6 +13,16 @@ config :app_web, AppWeb.Endpoint,
   url: [host: "attend_automate.attaf.tech", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+# Configure your database
+config :app, App.Repo,
+       url: System.get_env("DATABASE_URL"),
+       ssl: true,
+       timeout: 120_000,
+       pool_timeout: 120_000,
+       ownership_timeout: 120_000,
+       stacktrace: true,
+       pool_size: 10
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
