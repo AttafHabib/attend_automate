@@ -1,5 +1,8 @@
 # Attendance Automation using Image Recognition
 
+For demo vist:
+  https://attend-automate.attaf.tech/
+
 To start the application, you need to run both Phoenix and Flask servers
 
 To start your Phoenix server:
