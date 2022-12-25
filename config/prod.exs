@@ -10,7 +10,7 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :app_web, AppWeb.Endpoint,
-  url: [host: "attend_automate.attaf.tech", port: 80],
+  url: [host: "attend-automate.attaf.tech", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Configure your database
